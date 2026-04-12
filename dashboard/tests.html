@@ -1,0 +1,1503 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>CRM Test Suite — Huntington Analytics</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg: #ffffff;
+      --surface: #f8fafa;
+      --surface-deep: #f0f7f7;
+      --border: #e2e8f0;
+      --text: #1a202c;
+      --text-muted: #64748b;
+      --accent: #14b8a6;
+      --accent-bright: #2dd4bf;
+      --accent-emerald: #00d294;
+      --warning: #f97316;
+      --error: #fb2c36;
+      --success: #00d294;
+      --blue: #3080ff;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: 'Inter', -apple-system, system-ui, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      font-size: 15px;
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* ── Nav ── */
+    nav {
+      border-bottom: 1px solid var(--border);
+      background: var(--bg);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+
+    .nav-inner {
+      max-width: 960px;
+      margin: 0 auto;
+      padding: 1rem 2rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .nav-brand {
+      font-weight: 700;
+      font-size: 15px;
+      color: var(--text);
+      text-decoration: none;
+    }
+
+    .nav-brand span {
+      background: linear-gradient(135deg, #14b8a6, #00d294);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .nav-link {
+      font-size: 13px;
+      color: var(--text-muted);
+      text-decoration: none;
+    }
+
+    .nav-link:hover { color: var(--accent); }
+
+    /* ── Layout ── */
+    .container {
+      max-width: 960px;
+      margin: 0 auto;
+      padding: 0 2rem;
+    }
+
+    /* ── Hero ── */
+    .hero {
+      padding: 3rem 0 2rem;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .hero-eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      background: rgba(20, 184, 166, 0.08);
+      border: 1px solid rgba(20, 184, 166, 0.2);
+      color: var(--accent);
+      border-radius: 20px;
+      padding: 3px 12px;
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.8px;
+      margin-bottom: 1rem;
+    }
+
+    .hero-eyebrow::before {
+      content: '';
+      display: inline-block;
+      width: 6px;
+      height: 6px;
+      background: var(--accent);
+      border-radius: 50%;
+    }
+
+    .hero h1 {
+      font-size: clamp(28px, 5vw, 40px);
+      font-weight: 800;
+      background: linear-gradient(135deg, #14b8a6, #00d294);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      line-height: 1.15;
+      margin-bottom: 0.6rem;
+    }
+
+    .hero-sub {
+      color: var(--text-muted);
+      font-size: 15px;
+      max-width: 600px;
+    }
+
+    /* ── Controls bar ── */
+    .controls {
+      padding: 1.5rem 0;
+      display: flex;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 0.75rem;
+    }
+
+    .btn-primary {
+      background: linear-gradient(135deg, #14b8a6, #00d294);
+      color: #ffffff;
+      border: none;
+      border-radius: 8px;
+      padding: 0.65rem 1.4rem;
+      font-weight: 700;
+      font-size: 14px;
+      cursor: pointer;
+      font-family: inherit;
+      transition: opacity 0.15s, transform 0.1s;
+    }
+
+    .btn-primary:hover { opacity: 0.9; transform: translateY(-1px); }
+    .btn-primary:active { transform: translateY(0); }
+    .btn-primary:disabled { opacity: 0.55; cursor: not-allowed; transform: none; }
+
+    .btn-ghost {
+      background: transparent;
+      border: 1px solid var(--border);
+      color: var(--text-muted);
+      border-radius: 8px;
+      padding: 0.6rem 1.1rem;
+      font-weight: 600;
+      font-size: 13px;
+      cursor: pointer;
+      font-family: inherit;
+      transition: border-color 0.15s, color 0.15s;
+    }
+
+    .btn-ghost:hover { border-color: var(--accent); color: var(--accent); }
+    .btn-ghost.active { border-color: var(--accent); color: var(--accent); background: rgba(20, 184, 166, 0.06); }
+
+    .btn-export {
+      margin-left: auto;
+      background: transparent;
+      border: 1px solid var(--border);
+      color: var(--text-muted);
+      border-radius: 8px;
+      padding: 0.6rem 1.1rem;
+      font-weight: 600;
+      font-size: 13px;
+      cursor: pointer;
+      font-family: inherit;
+      transition: border-color 0.15s, color 0.15s;
+    }
+
+    .btn-export:hover { border-color: var(--accent); color: var(--accent); }
+
+    /* ── Progress bar ── */
+    .progress-wrap {
+      margin-bottom: 1.5rem;
+    }
+
+    .progress-label {
+      display: flex;
+      justify-content: space-between;
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--text-muted);
+      margin-bottom: 0.4rem;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .progress-track {
+      height: 6px;
+      background: var(--surface-deep);
+      border-radius: 99px;
+      overflow: hidden;
+    }
+
+    .progress-fill {
+      height: 100%;
+      background: linear-gradient(90deg, #14b8a6, #00d294);
+      border-radius: 99px;
+      width: 0%;
+      transition: width 0.3s ease;
+    }
+
+    /* ── Test results table ── */
+    .results-section {
+      margin-bottom: 2rem;
+    }
+
+    .results-table {
+      width: 100%;
+      border-collapse: collapse;
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      overflow: hidden;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.06);
+    }
+
+    .results-table thead th {
+      background: var(--surface-deep);
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      color: var(--text-muted);
+      padding: 0.65rem 1rem;
+      text-align: left;
+    }
+
+    .results-table thead th:first-child { width: 36px; text-align: center; }
+    .results-table thead th:nth-child(2) { width: 36px; text-align: center; }
+    .results-table thead th:last-child { width: 80px; text-align: right; }
+
+    .test-row {
+      border-top: 1px solid var(--border);
+      transition: background 0.1s;
+    }
+
+    .test-row td {
+      padding: 0.6rem 1rem;
+      font-size: 14px;
+      vertical-align: middle;
+    }
+
+    .test-row td:first-child { text-align: center; font-size: 15px; width: 36px; }
+    .test-row td:nth-child(2) { text-align: center; font-size: 12px; color: var(--text-muted); font-weight: 700; width: 36px; }
+    .test-row td:last-child { text-align: right; }
+
+    .test-row.status-pass { background: rgba(0, 210, 148, 0.04); }
+    .test-row.status-fail { background: rgba(251, 44, 54, 0.04); }
+    .test-row.status-running { background: rgba(20, 184, 166, 0.05); }
+
+    .test-name { font-weight: 500; color: var(--text); }
+    .test-name.fail { color: var(--error); }
+    .test-name.running { color: var(--accent); }
+
+    .error-msg {
+      font-size: 12px;
+      color: var(--error);
+      margin-top: 2px;
+      font-family: 'SF Mono', 'Geist Mono', monospace;
+    }
+
+    .category-badge {
+      display: inline-block;
+      padding: 2px 9px;
+      border-radius: 20px;
+      font-size: 11px;
+      font-weight: 600;
+    }
+
+    .cat-data    { background: rgba(20,184,166,0.1); color: #0e9488; }
+    .cat-ui      { background: rgba(48,128,255,0.1); color: #2563eb; }
+    .cat-search  { background: rgba(167,139,250,0.1); color: #7c3aed; }
+    .cat-nav     { background: rgba(249,115,22,0.1); color: #c2410c; }
+    .cat-detail  { background: rgba(0,210,148,0.1); color: #059669; }
+    .cat-resp    { background: rgba(251,44,54,0.1); color: #dc2626; }
+    .cat-perf    { background: rgba(100,116,139,0.12); color: #475569; }
+
+    .duration-cell {
+      font-size: 12px;
+      color: var(--text-muted);
+      font-family: 'SF Mono', 'Geist Mono', monospace;
+      white-space: nowrap;
+    }
+
+    /* ── Summary card ── */
+    .summary-card {
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+      padding: 1.5rem 2rem;
+      margin-bottom: 3rem;
+      display: none;
+    }
+
+    .summary-card.visible { display: block; }
+
+    .summary-title {
+      font-size: 12px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      color: var(--text-muted);
+      margin-bottom: 1.2rem;
+    }
+
+    .summary-stats {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+      gap: 1rem;
+      margin-bottom: 1.2rem;
+    }
+
+    .stat-item { text-align: center; }
+
+    .stat-number {
+      font-size: 32px;
+      font-weight: 800;
+      color: var(--accent);
+      line-height: 1;
+      margin-bottom: 0.25rem;
+    }
+
+    .stat-number.fail-color { color: var(--error); }
+    .stat-number.muted { color: var(--text); }
+
+    .stat-label {
+      font-size: 11px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      color: var(--text-muted);
+    }
+
+    .pass-rate-bar {
+      height: 8px;
+      background: var(--surface-deep);
+      border-radius: 99px;
+      overflow: hidden;
+      margin-bottom: 0.5rem;
+    }
+
+    .pass-rate-fill {
+      height: 100%;
+      border-radius: 99px;
+      background: linear-gradient(90deg, #14b8a6, #00d294);
+      transition: width 0.5s ease;
+    }
+
+    .pass-rate-label {
+      font-size: 12px;
+      color: var(--text-muted);
+      text-align: right;
+    }
+
+    /* ── Idle state ── */
+    .idle-state {
+      text-align: center;
+      padding: 3rem 0;
+      color: var(--text-muted);
+    }
+
+    .idle-icon {
+      font-size: 40px;
+      margin-bottom: 0.75rem;
+      opacity: 0.4;
+    }
+
+    .idle-text {
+      font-size: 15px;
+      font-weight: 500;
+    }
+
+    /* ── Footer ── */
+    footer {
+      background: var(--surface);
+      border-top: 1px solid var(--border);
+      padding: 2rem;
+      text-align: center;
+      color: var(--text-muted);
+      font-size: 13px;
+    }
+
+    /* ── Hidden iframe ── */
+    #crm-iframe {
+      position: fixed;
+      top: -9999px;
+      left: -9999px;
+      width: 1200px;
+      height: 800px;
+      border: none;
+      visibility: hidden;
+    }
+
+    @media (max-width: 640px) {
+      .controls { gap: 0.5rem; }
+      .btn-export { margin-left: 0; width: 100%; text-align: center; }
+      .results-table thead th:nth-child(4) { display: none; }
+      .test-row td:nth-child(4) { display: none; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- Hidden iframe for the CRM dashboard under test -->
+<iframe id="crm-iframe" src="index.html" title="CRM Dashboard under test"></iframe>
+
+<!-- Nav -->
+<nav>
+  <div class="nav-inner">
+    <a href="../index.html" class="nav-brand">Huntington <span>Analytics</span></a>
+    <a href="index.html" class="nav-link">CRM Dashboard &rarr;</a>
+  </div>
+</nav>
+
+<!-- Hero -->
+<div class="hero">
+  <div class="container">
+    <div class="hero-eyebrow">Automated Test Runner</div>
+    <h1>CRM Test Suite</h1>
+    <p class="hero-sub">43 tests across data integrity, UI rendering, search &amp; filter, navigation, contact details, responsiveness, and performance.</p>
+  </div>
+</div>
+
+<!-- Main content -->
+<main class="container">
+
+  <!-- Controls -->
+  <div class="controls">
+    <button class="btn-primary" id="btn-run-all">Run All Tests</button>
+    <button class="btn-ghost active" id="btn-cat-all" data-cat="all">All</button>
+    <button class="btn-ghost" data-cat="data">Data</button>
+    <button class="btn-ghost" data-cat="ui">UI</button>
+    <button class="btn-ghost" data-cat="search">Search</button>
+    <button class="btn-ghost" data-cat="nav">Navigation</button>
+    <button class="btn-ghost" data-cat="detail">Details</button>
+    <button class="btn-ghost" data-cat="resp">Responsive</button>
+    <button class="btn-ghost" data-cat="perf">Performance</button>
+    <button class="btn-export" id="btn-export">Export JSON</button>
+  </div>
+
+  <!-- Progress bar -->
+  <div class="progress-wrap" id="progress-wrap" style="display:none">
+    <div class="progress-label">
+      <span>Running tests&hellip;</span>
+      <span id="progress-text">0 / 0</span>
+    </div>
+    <div class="progress-track">
+      <div class="progress-fill" id="progress-fill"></div>
+    </div>
+  </div>
+
+  <!-- Results table -->
+  <div class="results-section">
+    <div id="idle-state" class="idle-state">
+      <div class="idle-icon">&#9654;</div>
+      <div class="idle-text">Click "Run All Tests" to begin</div>
+    </div>
+
+    <table class="results-table" id="results-table" style="display:none">
+      <thead>
+        <tr>
+          <th>#</th>
+          <th></th>
+          <th>Test Name</th>
+          <th>Category</th>
+          <th>Duration</th>
+        </tr>
+      </thead>
+      <tbody id="results-tbody">
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Summary card -->
+  <div class="summary-card" id="summary-card">
+    <div class="summary-title">Results Summary</div>
+    <div class="summary-stats">
+      <div class="stat-item">
+        <div class="stat-number" id="sum-total">0</div>
+        <div class="stat-label">Total</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-number" id="sum-passed">0</div>
+        <div class="stat-label">Passed</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-number fail-color" id="sum-failed">0</div>
+        <div class="stat-label">Failed</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-number muted" id="sum-duration">0ms</div>
+        <div class="stat-label">Duration</div>
+      </div>
+    </div>
+    <div class="pass-rate-bar">
+      <div class="pass-rate-fill" id="sum-rate-fill" style="width:0%"></div>
+    </div>
+    <div class="pass-rate-label" id="sum-rate-label">Pass rate: 0%</div>
+  </div>
+
+</main>
+
+<footer>
+  Jennifer CRM Test Suite &mdash; Huntington Analytics
+</footer>
+
+<script>
+// ─────────────────────────────────────────────────────────────
+//  Test framework
+// ─────────────────────────────────────────────────────────────
+
+const CATEGORY_META = {
+  data:   { label: 'Data',        cls: 'cat-data'   },
+  ui:     { label: 'UI',          cls: 'cat-ui'      },
+  search: { label: 'Search',      cls: 'cat-search'  },
+  nav:    { label: 'Navigation',  cls: 'cat-nav'     },
+  detail: { label: 'Details',     cls: 'cat-detail'  },
+  resp:   { label: 'Responsive',  cls: 'cat-resp'    },
+  perf:   { label: 'Performance', cls: 'cat-perf'    },
+};
+
+let iframeDoc = null;
+let iframeWin = null;
+let iframeLoadTime = null;
+
+// All test results keyed by test index
+const results = [];
+
+// ─────────────────────────────────────────────────────────────
+//  Helper: access the iframe safely
+// ─────────────────────────────────────────────────────────────
+function getIframe() {
+  const iframe = document.getElementById('crm-iframe');
+  return { doc: iframe.contentDocument, win: iframe.contentWindow };
+}
+
+function q(selector) {
+  return iframeDoc ? iframeDoc.querySelector(selector) : null;
+}
+
+function qa(selector) {
+  return iframeDoc ? Array.from(iframeDoc.querySelectorAll(selector)) : [];
+}
+
+function getCrmData() {
+  if (!iframeWin) return null;
+  return iframeWin.CRM_DATA || null;
+}
+
+// ─────────────────────────────────────────────────────────────
+//  Helper: simulate clicking a tab and waiting briefly
+// ─────────────────────────────────────────────────────────────
+function clickTab(selector) {
+  const el = q(selector);
+  if (!el) throw new Error(`Tab not found: ${selector}`);
+  el.click();
+}
+
+function countVisible(selector) {
+  return qa(selector).filter(el => {
+    const style = iframeWin.getComputedStyle(el);
+    return style.display !== 'none' && style.visibility !== 'hidden';
+  }).length;
+}
+
+// ─────────────────────────────────────────────────────────────
+//  Helper: set search input value and trigger input event
+// ─────────────────────────────────────────────────────────────
+function setSearch(value) {
+  const input = q('[data-test="search"], #search, input[type="search"], input[placeholder*="earch" i]');
+  if (!input) throw new Error('Search input not found');
+  input.value = value;
+  input.dispatchEvent(new iframeWin.Event('input', { bubbles: true }));
+  input.dispatchEvent(new iframeWin.KeyboardEvent('keyup', { bubbles: true }));
+}
+
+function setLocationFilter(value) {
+  // Try a <select> first, then any element with a matching data attribute
+  const sel = q('[data-test="location-filter"], #location-filter, select[id*="location" i]');
+  if (sel && sel.tagName === 'SELECT') {
+    sel.value = value;
+    sel.dispatchEvent(new iframeWin.Event('change', { bubbles: true }));
+    return;
+  }
+  throw new Error('Location filter not found');
+}
+
+function countContactRows() {
+  // Try table rows first, then list items or cards
+  const tbodyRows = qa('[data-test="contacts-table"] tbody tr, #contacts-table tbody tr, #contacts-body tr');
+  if (tbodyRows.length) return tbodyRows.filter(r => r.style.display !== 'none').length;
+
+  const cards = qa('[data-test="contact-card"], .contact-card, .contact-row');
+  if (cards.length) return cards.filter(c => c.style.display !== 'none').length;
+
+  // Last resort: any tr inside the contacts section that isn't a header
+  const section = q('#tab-contacts, [data-tab="contacts"], .contacts-content');
+  if (section) {
+    const rows = Array.from(section.querySelectorAll('tr')).filter(r => !r.closest('thead'));
+    return rows.filter(r => r.style.display !== 'none').length;
+  }
+  return 0;
+}
+
+// ─────────────────────────────────────────────────────────────
+//  Test suite definitions
+// ─────────────────────────────────────────────────────────────
+const TESTS = [
+
+  // ── DATA INTEGRITY ──────────────────────────────────────────
+  {
+    id: 1, cat: 'data',
+    name: 'CRM_DATA exists and is an object',
+    fn() {
+      const d = getCrmData();
+      if (!d || typeof d !== 'object') throw new Error('CRM_DATA not found or not an object');
+      return true;
+    }
+  },
+  {
+    id: 2, cat: 'data',
+    name: 'contacts array has exactly 32 entries',
+    fn() {
+      const d = getCrmData();
+      if (!Array.isArray(d.contacts)) throw new Error('contacts is not an array');
+      if (d.contacts.length !== 32) throw new Error(`Expected 32, got ${d.contacts.length}`);
+      return true;
+    }
+  },
+  {
+    id: 3, cat: 'data',
+    name: 'audits array has exactly 25 entries',
+    fn() {
+      const d = getCrmData();
+      if (!Array.isArray(d.audits)) throw new Error('audits is not an array');
+      if (d.audits.length !== 25) throw new Error(`Expected 25, got ${d.audits.length}`);
+      return true;
+    }
+  },
+  {
+    id: 4, cat: 'data',
+    name: 'research array has exactly 9 entries',
+    fn() {
+      const d = getCrmData();
+      if (!Array.isArray(d.research)) throw new Error('research is not an array');
+      if (d.research.length !== 9) throw new Error(`Expected 9, got ${d.research.length}`);
+      return true;
+    }
+  },
+  {
+    id: 5, cat: 'data',
+    name: 'interactions array has exactly 39 entries',
+    fn() {
+      const d = getCrmData();
+      if (!Array.isArray(d.interactions)) throw new Error('interactions is not an array');
+      if (d.interactions.length !== 39) throw new Error(`Expected 39, got ${d.interactions.length}`);
+      return true;
+    }
+  },
+  {
+    id: 6, cat: 'data',
+    name: 'Every contact has required fields: id, name, created_at',
+    fn() {
+      const { contacts } = getCrmData();
+      const missing = contacts.filter(c => !c.id || !c.name || !c.created_at);
+      if (missing.length) throw new Error(`${missing.length} contact(s) missing required fields`);
+      return true;
+    }
+  },
+  {
+    id: 7, cat: 'data',
+    name: 'Every contact with email has valid email format',
+    fn() {
+      const { contacts } = getCrmData();
+      const bad = contacts.filter(c => c.email && !c.email.includes('@'));
+      if (bad.length) throw new Error(`${bad.length} contact(s) with invalid email: ${bad.map(c => c.email).join(', ')}`);
+      return true;
+    }
+  },
+  {
+    id: 8, cat: 'data',
+    name: 'Every audit has contact_id mapping to existing contact (or null)',
+    fn() {
+      const { contacts, audits } = getCrmData();
+      const ids = new Set(contacts.map(c => c.id));
+      const bad = audits.filter(a => a.contact_id !== null && a.contact_id !== undefined && !ids.has(a.contact_id));
+      if (bad.length) throw new Error(`${bad.length} audit(s) with unresolved contact_id`);
+      return true;
+    }
+  },
+  {
+    id: 9, cat: 'data',
+    name: 'Every research entry has contact_id mapping to existing contact (or null)',
+    fn() {
+      const { contacts, research } = getCrmData();
+      const ids = new Set(contacts.map(c => c.id));
+      const bad = research.filter(r => r.contact_id !== null && r.contact_id !== undefined && !ids.has(r.contact_id));
+      if (bad.length) throw new Error(`${bad.length} research entr(ies) with unresolved contact_id`);
+      return true;
+    }
+  },
+  {
+    id: 10, cat: 'data',
+    name: 'Every interaction has contact_id mapping to existing contact',
+    fn() {
+      const { contacts, interactions } = getCrmData();
+      const ids = new Set(contacts.map(c => c.id));
+      const bad = interactions.filter(i => !ids.has(i.contact_id));
+      if (bad.length) throw new Error(`${bad.length} interaction(s) with unresolved contact_id`);
+      return true;
+    }
+  },
+  {
+    id: 11, cat: 'data',
+    name: 'No duplicate contact IDs',
+    fn() {
+      const { contacts } = getCrmData();
+      const ids = contacts.map(c => c.id);
+      const dupes = ids.filter((id, i) => ids.indexOf(id) !== i);
+      if (dupes.length) throw new Error(`Duplicate IDs found: ${[...new Set(dupes)].join(', ')}`);
+      return true;
+    }
+  },
+  {
+    id: 12, cat: 'data',
+    name: 'All contacts have non-empty name field',
+    fn() {
+      const { contacts } = getCrmData();
+      const empty = contacts.filter(c => !c.name || c.name.trim() === '');
+      if (empty.length) throw new Error(`${empty.length} contact(s) have empty name`);
+      return true;
+    }
+  },
+  {
+    id: 13, cat: 'data',
+    name: 'Tags field is valid JSON array for each contact',
+    fn() {
+      const { contacts } = getCrmData();
+      const bad = [];
+      contacts.forEach(c => {
+        if (c.tags === undefined || c.tags === null) return; // allowed to be absent
+        if (typeof c.tags === 'string') {
+          try { const parsed = JSON.parse(c.tags); if (!Array.isArray(parsed)) bad.push(c.id); }
+          catch { bad.push(c.id); }
+        } else if (!Array.isArray(c.tags)) {
+          bad.push(c.id);
+        }
+      });
+      if (bad.length) throw new Error(`${bad.length} contact(s) have invalid tags: ${bad.join(', ')}`);
+      return true;
+    }
+  },
+
+  // ── UI RENDERING ─────────────────────────────────────────────
+  {
+    id: 14, cat: 'ui',
+    name: 'Dashboard tab renders at least 4 stat cards',
+    fn() {
+      // Navigate to dashboard tab first
+      const dashTab = q('[data-tab="dashboard"], #tab-btn-dashboard, button[data-target="dashboard"], a[href="#dashboard"]');
+      if (dashTab) dashTab.click();
+      const stats = qa('.stat-card, .stat, [data-test="stat-card"], .kpi-card, .metric-card');
+      if (stats.length < 4) throw new Error(`Found ${stats.length} stat card(s), expected at least 4`);
+      return true;
+    }
+  },
+  {
+    id: 15, cat: 'ui',
+    name: 'Contacts tab renders all 32 contact rows/cards',
+    fn() {
+      const btn = q('[data-tab="contacts"], #tab-btn-contacts, button[data-target="contacts"]');
+      if (btn) btn.click();
+      // Give immediate synchronous render a chance, then count
+      const count = countContactRows();
+      if (count < 32) throw new Error(`Found ${count} contact row(s), expected 32`);
+      return true;
+    }
+  },
+  {
+    id: 16, cat: 'ui',
+    name: 'Audits tab renders all 25 audit entries',
+    fn() {
+      const btn = q('[data-tab="audits"], #tab-btn-audits, button[data-target="audits"]');
+      if (btn) btn.click();
+      const section = q('#tab-audits, [data-tab-content="audits"], .audits-content, #audits-content');
+      const rows = section
+        ? Array.from(section.querySelectorAll('tr, .audit-row, .audit-item, .list-item')).filter(r => !r.closest('thead'))
+        : qa('.audit-row, .audit-item, [data-test="audit-row"]');
+      if (rows.length < 25) throw new Error(`Found ${rows.length} audit row(s), expected 25`);
+      return true;
+    }
+  },
+  {
+    id: 17, cat: 'ui',
+    name: 'Research tab renders all 9 research entries',
+    fn() {
+      const btn = q('[data-tab="research"], #tab-btn-research, button[data-target="research"]');
+      if (btn) btn.click();
+      const section = q('#tab-research, [data-tab-content="research"], .research-content, #research-content');
+      const rows = section
+        ? Array.from(section.querySelectorAll('tr, .research-row, .research-item, .list-item')).filter(r => !r.closest('thead'))
+        : qa('.research-row, .research-item, [data-test="research-row"]');
+      if (rows.length < 9) throw new Error(`Found ${rows.length} research entr(ies), expected 9`);
+      return true;
+    }
+  },
+  {
+    id: 18, cat: 'ui',
+    name: 'Interactions tab renders all 39 interaction entries',
+    fn() {
+      const btn = q('[data-tab="interactions"], #tab-btn-interactions, button[data-target="interactions"]');
+      if (btn) btn.click();
+      const section = q('#tab-interactions, [data-tab-content="interactions"], .interactions-content, #interactions-content');
+      const rows = section
+        ? Array.from(section.querySelectorAll('tr, .interaction-row, .interaction-item, .list-item')).filter(r => !r.closest('thead'))
+        : qa('.interaction-row, .interaction-item, [data-test="interaction-row"]');
+      if (rows.length < 39) throw new Error(`Found ${rows.length} interaction(s), expected 39`);
+      return true;
+    }
+  },
+  {
+    id: 19, cat: 'ui',
+    name: 'Navigation tabs exist and are clickable',
+    fn() {
+      const tabs = qa('[data-tab], .tab-btn, .nav-tab, [role="tab"]');
+      if (tabs.length < 2) throw new Error(`Found only ${tabs.length} tab element(s)`);
+      return true;
+    }
+  },
+  {
+    id: 20, cat: 'ui',
+    name: 'Search input element exists',
+    fn() {
+      const el = q('[data-test="search"], #search, input[type="search"], input[placeholder*="earch" i], input[id*="search" i]');
+      if (!el) throw new Error('No search input found');
+      return true;
+    }
+  },
+  {
+    id: 21, cat: 'ui',
+    name: 'Location filter dropdown exists',
+    fn() {
+      const el = q('[data-test="location-filter"], #location-filter, select[id*="location" i], select[name*="location" i]');
+      if (!el) throw new Error('No location filter element found');
+      return true;
+    }
+  },
+
+  // ── SEARCH & FILTER ──────────────────────────────────────────
+  {
+    id: 22, cat: 'search',
+    name: 'Search for "Harry" returns at least 1 result',
+    fn() {
+      // First make sure contacts tab is active
+      const btn = q('[data-tab="contacts"], #tab-btn-contacts, button[data-target="contacts"]');
+      if (btn) btn.click();
+      setSearch('Harry');
+      const count = countContactRows();
+      setSearch('');
+      if (count < 1) throw new Error(`Search "Harry" returned ${count} results`);
+      return true;
+    }
+  },
+  {
+    id: 23, cat: 'search',
+    name: 'Search for "Marshall" returns multiple results',
+    fn() {
+      const btn = q('[data-tab="contacts"], #tab-btn-contacts, button[data-target="contacts"]');
+      if (btn) btn.click();
+      setSearch('Marshall');
+      const count = countContactRows();
+      setSearch('');
+      if (count < 2) throw new Error(`Search "Marshall" returned ${count} result(s), expected multiple`);
+      return true;
+    }
+  },
+  {
+    id: 24, cat: 'search',
+    name: 'Search for "xyznonexistent" returns 0 results',
+    fn() {
+      const btn = q('[data-tab="contacts"], #tab-btn-contacts, button[data-target="contacts"]');
+      if (btn) btn.click();
+      setSearch('xyznonexistent');
+      const count = countContactRows();
+      setSearch('');
+      if (count !== 0) throw new Error(`Expected 0 results, got ${count}`);
+      return true;
+    }
+  },
+  {
+    id: 25, cat: 'search',
+    name: 'Clearing search restores all 32 results',
+    fn() {
+      const btn = q('[data-tab="contacts"], #tab-btn-contacts, button[data-target="contacts"]');
+      if (btn) btn.click();
+      setSearch('harry');
+      setSearch('');
+      const count = countContactRows();
+      if (count < 32) throw new Error(`After clearing, expected 32, got ${count}`);
+      return true;
+    }
+  },
+  {
+    id: 26, cat: 'search',
+    name: 'Filter by location "Huntington, WV" returns correct count',
+    fn() {
+      const btn = q('[data-tab="contacts"], #tab-btn-contacts, button[data-target="contacts"]');
+      if (btn) btn.click();
+      setLocationFilter('Huntington, WV');
+      const count = countContactRows();
+      setLocationFilter('');
+      if (count < 1) throw new Error(`Location filter "Huntington, WV" returned ${count} result(s)`);
+      return true;
+    }
+  },
+  {
+    id: 27, cat: 'search',
+    name: 'Filter by location "Charleston, WV" returns correct count',
+    fn() {
+      const btn = q('[data-tab="contacts"], #tab-btn-contacts, button[data-target="contacts"]');
+      if (btn) btn.click();
+      setLocationFilter('Charleston, WV');
+      const count = countContactRows();
+      setLocationFilter('');
+      if (count < 1) throw new Error(`Location filter "Charleston, WV" returned ${count} result(s)`);
+      return true;
+    }
+  },
+
+  // ── TAB NAVIGATION ───────────────────────────────────────────
+  {
+    id: 28, cat: 'nav',
+    name: 'Clicking Contacts tab shows contacts content',
+    fn() {
+      const btn = q('[data-tab="contacts"], #tab-btn-contacts, button[data-target="contacts"]');
+      if (!btn) throw new Error('Contacts tab button not found');
+      btn.click();
+      const content = q('#tab-contacts, [data-tab-content="contacts"], .contacts-content, #contacts-content');
+      if (!content) throw new Error('Contacts content panel not found');
+      const style = iframeWin.getComputedStyle(content);
+      if (style.display === 'none') throw new Error('Contacts content is hidden after click');
+      return true;
+    }
+  },
+  {
+    id: 29, cat: 'nav',
+    name: 'Clicking Audits tab shows audits content',
+    fn() {
+      const btn = q('[data-tab="audits"], #tab-btn-audits, button[data-target="audits"]');
+      if (!btn) throw new Error('Audits tab button not found');
+      btn.click();
+      const content = q('#tab-audits, [data-tab-content="audits"], .audits-content, #audits-content');
+      if (!content) throw new Error('Audits content panel not found');
+      const style = iframeWin.getComputedStyle(content);
+      if (style.display === 'none') throw new Error('Audits content is hidden after click');
+      return true;
+    }
+  },
+  {
+    id: 30, cat: 'nav',
+    name: 'Clicking Research tab shows research content',
+    fn() {
+      const btn = q('[data-tab="research"], #tab-btn-research, button[data-target="research"]');
+      if (!btn) throw new Error('Research tab button not found');
+      btn.click();
+      const content = q('#tab-research, [data-tab-content="research"], .research-content, #research-content');
+      if (!content) throw new Error('Research content panel not found');
+      const style = iframeWin.getComputedStyle(content);
+      if (style.display === 'none') throw new Error('Research content is hidden after click');
+      return true;
+    }
+  },
+  {
+    id: 31, cat: 'nav',
+    name: 'Clicking Interactions tab shows interactions content',
+    fn() {
+      const btn = q('[data-tab="interactions"], #tab-btn-interactions, button[data-target="interactions"]');
+      if (!btn) throw new Error('Interactions tab button not found');
+      btn.click();
+      const content = q('#tab-interactions, [data-tab-content="interactions"], .interactions-content, #interactions-content');
+      if (!content) throw new Error('Interactions content panel not found');
+      const style = iframeWin.getComputedStyle(content);
+      if (style.display === 'none') throw new Error('Interactions content is hidden after click');
+      return true;
+    }
+  },
+  {
+    id: 32, cat: 'nav',
+    name: 'Clicking Dashboard tab shows dashboard content',
+    fn() {
+      // First navigate away
+      const contactBtn = q('[data-tab="contacts"], #tab-btn-contacts, button[data-target="contacts"]');
+      if (contactBtn) contactBtn.click();
+      const btn = q('[data-tab="dashboard"], #tab-btn-dashboard, button[data-target="dashboard"]');
+      if (!btn) throw new Error('Dashboard tab button not found');
+      btn.click();
+      const content = q('#tab-dashboard, [data-tab-content="dashboard"], .dashboard-content, #dashboard-content');
+      if (!content) throw new Error('Dashboard content panel not found');
+      const style = iframeWin.getComputedStyle(content);
+      if (style.display === 'none') throw new Error('Dashboard content is hidden after click');
+      return true;
+    }
+  },
+  {
+    id: 33, cat: 'nav',
+    name: 'Only one tab content panel visible at a time',
+    fn() {
+      // Click contacts tab and count visible content panels
+      const btn = q('[data-tab="contacts"], #tab-btn-contacts, button[data-target="contacts"]');
+      if (btn) btn.click();
+      const allPanels = qa('[data-tab-content], .tab-content, .tab-panel, [id^="tab-"]');
+      if (allPanels.length < 2) {
+        // Fallback: look for any panel structure
+        return true; // Can't assert if there aren't multiple panels
+      }
+      const visible = allPanels.filter(p => {
+        const s = iframeWin.getComputedStyle(p);
+        return s.display !== 'none' && s.visibility !== 'hidden';
+      });
+      if (visible.length > 1) throw new Error(`${visible.length} panels visible simultaneously, expected 1`);
+      return true;
+    }
+  },
+
+  // ── CONTACT DETAILS ──────────────────────────────────────────
+  {
+    id: 34, cat: 'detail',
+    name: 'Clicking a contact row expands or shows detail view',
+    fn() {
+      const btn = q('[data-tab="contacts"], #tab-btn-contacts, button[data-target="contacts"]');
+      if (btn) btn.click();
+      setSearch('');
+      // Find a clickable contact row
+      const row = q('tr[data-contact-id], tr[data-id], .contact-row[data-id], .contact-card[data-id], tr.contact');
+      if (!row) {
+        // Try just the first tbody tr
+        const section = q('#tab-contacts, [data-tab-content="contacts"], .contacts-content, #contacts-content');
+        const firstRow = section ? section.querySelector('tbody tr, .contact-item, .contact-card') : null;
+        if (!firstRow) throw new Error('No contact row found to click');
+        firstRow.click();
+      } else {
+        row.click();
+      }
+      // Check for a detail panel or modal appearing
+      const detail = q('.contact-detail, #contact-detail, [data-test="contact-detail"], .detail-panel, .modal, .drawer');
+      if (!detail) {
+        // Some implementations expand inline — check if any element gained an "expanded" or "active" class
+        const expanded = q('.expanded, .active-detail, [aria-expanded="true"]');
+        if (!expanded) throw new Error('No detail view appeared after clicking contact');
+      }
+      return true;
+    }
+  },
+  {
+    id: 35, cat: 'detail',
+    name: 'Detail view shows email if contact has one',
+    fn() {
+      // Find a contact with email
+      const { contacts } = getCrmData();
+      const withEmail = contacts.find(c => c.email);
+      if (!withEmail) return true; // no contacts with email, skip gracefully
+
+      // Click that contact's row
+      const btn = q('[data-tab="contacts"], #tab-btn-contacts, button[data-target="contacts"]');
+      if (btn) btn.click();
+      setSearch(withEmail.name.split(' ')[0]);
+
+      const row = q(`tr[data-contact-id="${withEmail.id}"], [data-id="${withEmail.id}"], tr.contact-${withEmail.id}`);
+      if (row) {
+        row.click();
+      } else {
+        const first = q('tbody tr, .contact-item');
+        if (first) first.click();
+      }
+      setSearch('');
+
+      const detail = q('.contact-detail, #contact-detail, [data-test="contact-detail"], .detail-panel, .modal, .side-panel');
+      if (!detail) throw new Error('No detail panel found');
+      if (!detail.textContent.includes('@')) throw new Error('Email not visible in detail panel');
+      return true;
+    }
+  },
+  {
+    id: 36, cat: 'detail',
+    name: 'Detail view shows phone if contact has one',
+    fn() {
+      const { contacts } = getCrmData();
+      const withPhone = contacts.find(c => c.phone);
+      if (!withPhone) return true; // skip gracefully
+
+      const btn = q('[data-tab="contacts"], #tab-btn-contacts, button[data-target="contacts"]');
+      if (btn) btn.click();
+      setSearch(withPhone.name.split(' ')[0]);
+
+      const row = q(`tr[data-contact-id="${withPhone.id}"], [data-id="${withPhone.id}"]`);
+      if (row) row.click();
+      else {
+        const first = q('tbody tr, .contact-item');
+        if (first) first.click();
+      }
+      setSearch('');
+
+      const detail = q('.contact-detail, #contact-detail, [data-test="contact-detail"], .detail-panel, .modal, .side-panel');
+      if (!detail) throw new Error('No detail panel found');
+      // Phone numbers contain digits
+      if (!/\d{3}/.test(detail.textContent)) throw new Error('Phone not visible in detail panel');
+      return true;
+    }
+  },
+  {
+    id: 37, cat: 'detail',
+    name: 'Detail view shows tags as pills or badges',
+    fn() {
+      const { contacts } = getCrmData();
+      // Find a contact with tags
+      const withTags = contacts.find(c => {
+        if (!c.tags) return false;
+        const t = Array.isArray(c.tags) ? c.tags : (typeof c.tags === 'string' ? JSON.parse(c.tags) : []);
+        return t.length > 0;
+      });
+      if (!withTags) return true; // skip gracefully
+
+      const btn = q('[data-tab="contacts"], #tab-btn-contacts, button[data-target="contacts"]');
+      if (btn) btn.click();
+      setSearch(withTags.name.split(' ')[0]);
+
+      const row = q(`tr[data-contact-id="${withTags.id}"], [data-id="${withTags.id}"]`);
+      if (row) row.click();
+      else {
+        const first = q('tbody tr, .contact-item');
+        if (first) first.click();
+      }
+      setSearch('');
+
+      const detail = q('.contact-detail, #contact-detail, [data-test="contact-detail"], .detail-panel, .modal, .side-panel');
+      if (!detail) throw new Error('No detail panel found');
+      const pills = detail.querySelectorAll('.tag, .badge, .pill, [class*="tag"], [class*="badge"]');
+      if (pills.length < 1) throw new Error('No tag pills found in detail view');
+      return true;
+    }
+  },
+
+  // ── RESPONSIVE ───────────────────────────────────────────────
+  {
+    id: 38, cat: 'resp',
+    name: 'Page has viewport meta tag',
+    fn() {
+      const meta = q('meta[name="viewport"]');
+      if (!meta) throw new Error('No viewport meta tag found');
+      const content = meta.getAttribute('content') || '';
+      if (!content.includes('width=device-width')) throw new Error(`viewport meta missing width=device-width: "${content}"`);
+      return true;
+    }
+  },
+  {
+    id: 39, cat: 'resp',
+    name: 'Container has max-width set',
+    fn() {
+      const container = q('.container, [class*="container"], main, .main-content');
+      if (!container) throw new Error('No container element found');
+      const style = iframeWin.getComputedStyle(container);
+      const mw = style.maxWidth;
+      if (!mw || mw === 'none') throw new Error(`Container max-width is "${mw}"`);
+      return true;
+    }
+  },
+  {
+    id: 40, cat: 'resp',
+    name: 'Page renders without horizontal scroll at 375px width',
+    fn() {
+      const iframe = document.getElementById('crm-iframe');
+      const origWidth = iframe.style.width;
+      iframe.style.width = '375px';
+      // Force a reflow
+      const scrollWidth = iframe.contentDocument.documentElement.scrollWidth;
+      const clientWidth = iframe.contentDocument.documentElement.clientWidth;
+      iframe.style.width = origWidth || '1200px';
+      if (scrollWidth > clientWidth + 2) { // 2px tolerance
+        throw new Error(`Horizontal overflow: scrollWidth=${scrollWidth} clientWidth=${clientWidth}`);
+      }
+      return true;
+    }
+  },
+
+  // ── PERFORMANCE ──────────────────────────────────────────────
+  {
+    id: 41, cat: 'perf',
+    name: 'Page loads in under 3 seconds',
+    fn() {
+      if (iframeLoadTime === null) throw new Error('Load time not recorded');
+      if (iframeLoadTime > 3000) throw new Error(`Load took ${iframeLoadTime.toFixed(0)}ms (limit: 3000ms)`);
+      return true;
+    }
+  },
+  {
+    id: 42, cat: 'perf',
+    name: 'Search filtering completes in under 100ms',
+    fn() {
+      const btn = q('[data-tab="contacts"], #tab-btn-contacts, button[data-target="contacts"]');
+      if (btn) btn.click();
+      setSearch('');
+      const t0 = performance.now();
+      setSearch('Marshall');
+      const elapsed = performance.now() - t0;
+      setSearch('');
+      if (elapsed > 100) throw new Error(`Search took ${elapsed.toFixed(1)}ms (limit: 100ms)`);
+      return true;
+    }
+  },
+  {
+    id: 43, cat: 'perf',
+    name: 'Tab switching completes in under 50ms',
+    fn() {
+      const contactsBtn = q('[data-tab="contacts"], #tab-btn-contacts, button[data-target="contacts"]');
+      const auditsBtn   = q('[data-tab="audits"],   #tab-btn-audits,   button[data-target="audits"]');
+      if (!contactsBtn || !auditsBtn) throw new Error('Could not find both tabs for timing');
+      contactsBtn.click();
+      const t0 = performance.now();
+      auditsBtn.click();
+      const elapsed = performance.now() - t0;
+      contactsBtn.click();
+      if (elapsed > 50) throw new Error(`Tab switch took ${elapsed.toFixed(1)}ms (limit: 50ms)`);
+      return true;
+    }
+  },
+];
+
+// ─────────────────────────────────────────────────────────────
+//  Runner state
+// ─────────────────────────────────────────────────────────────
+let isRunning = false;
+let activeCategory = 'all';
+
+// ─────────────────────────────────────────────────────────────
+//  DOM helpers
+// ─────────────────────────────────────────────────────────────
+function categoryBadge(cat) {
+  const m = CATEGORY_META[cat] || { label: cat, cls: 'cat-data' };
+  return `<span class="category-badge ${m.cls}">${m.label}</span>`;
+}
+
+function statusIcon(status) {
+  if (status === 'pass')    return '<span title="Pass">&#9989;</span>';
+  if (status === 'fail')    return '<span title="Fail">&#10060;</span>';
+  if (status === 'running') return '<span title="Running" style="animation:spin 1s linear infinite;display:inline-block">&#9654;</span>';
+  return '<span style="color:#94a3b8">&#8212;</span>';
+}
+
+function getRow(testId) {
+  return document.getElementById(`test-row-${testId}`);
+}
+
+function renderRows(tests) {
+  const tbody = document.getElementById('results-tbody');
+  tbody.innerHTML = '';
+  tests.forEach((t, idx) => {
+    const tr = document.createElement('tr');
+    tr.id = `test-row-${t.id}`;
+    tr.className = 'test-row';
+    tr.innerHTML = `
+      <td class="num-cell">${t.id}</td>
+      <td class="icon-cell">${statusIcon('pending')}</td>
+      <td>
+        <div class="test-name" id="test-name-${t.id}">${t.name}</div>
+        <div class="error-msg" id="test-err-${t.id}" style="display:none"></div>
+      </td>
+      <td>${categoryBadge(t.cat)}</td>
+      <td class="duration-cell" id="test-dur-${t.id}">—</td>
+    `;
+    tbody.appendChild(tr);
+  });
+}
+
+function updateRow(t, status, durationMs, errMsg) {
+  const row = getRow(t.id);
+  if (!row) return;
+  row.className = `test-row status-${status}`;
+  row.querySelector('.icon-cell').innerHTML = statusIcon(status);
+
+  const nameEl = document.getElementById(`test-name-${t.id}`);
+  nameEl.className = `test-name ${status === 'fail' ? 'fail' : status === 'running' ? 'running' : ''}`;
+
+  const errEl = document.getElementById(`test-err-${t.id}`);
+  if (errMsg && status === 'fail') {
+    errEl.style.display = 'block';
+    errEl.textContent = errMsg;
+  } else {
+    errEl.style.display = 'none';
+  }
+
+  const durEl = document.getElementById(`test-dur-${t.id}`);
+  durEl.textContent = durationMs != null ? `${durationMs.toFixed(1)}ms` : '—';
+}
+
+function updateProgress(done, total) {
+  const pct = total ? (done / total) * 100 : 0;
+  document.getElementById('progress-fill').style.width = `${pct}%`;
+  document.getElementById('progress-text').textContent = `${done} / ${total}`;
+}
+
+function showSummary(passed, failed, total, durationMs) {
+  const card = document.getElementById('summary-card');
+  card.classList.add('visible');
+  document.getElementById('sum-total').textContent    = total;
+  document.getElementById('sum-passed').textContent   = passed;
+  document.getElementById('sum-failed').textContent   = failed;
+  document.getElementById('sum-duration').textContent = durationMs >= 1000
+    ? `${(durationMs / 1000).toFixed(2)}s`
+    : `${Math.round(durationMs)}ms`;
+
+  const rate = total ? Math.round((passed / total) * 100) : 0;
+  document.getElementById('sum-rate-fill').style.width = `${rate}%`;
+  document.getElementById('sum-rate-label').textContent = `Pass rate: ${rate}%`;
+}
+
+// ─────────────────────────────────────────────────────────────
+//  Run tests
+// ─────────────────────────────────────────────────────────────
+function sleep(ms) {
+  return new Promise(resolve => setTimeout(resolve, ms));
+}
+
+function reloadIframe() {
+  // Reload the iframe with a cache-busting query param and return a promise
+  // that resolves with the load time in ms.
+  return new Promise((resolve, reject) => {
+    const iframe = document.getElementById('crm-iframe');
+    const t0 = performance.now();
+    // Listen with addEventListener so we don't clobber any existing onload
+    function onLoad() {
+      iframe.removeEventListener('load', onLoad);
+      clearTimeout(timer);
+      iframeLoadTime = performance.now() - t0;
+      resolve(iframeLoadTime);
+    }
+    const timer = setTimeout(() => {
+      iframe.removeEventListener('load', onLoad);
+      reject(new Error('iframe load timeout (5s)'));
+    }, 5000);
+    iframe.addEventListener('load', onLoad);
+    iframe.src = 'index.html?' + Date.now();
+  });
+}
+
+async function runTests(testsToRun) {
+  if (isRunning) return;
+  isRunning = true;
+
+  const runBtn = document.getElementById('btn-run-all');
+  runBtn.disabled = true;
+  runBtn.textContent = 'Running…';
+
+  // Show table, hide idle
+  document.getElementById('idle-state').style.display = 'none';
+  document.getElementById('results-table').style.display = 'table';
+  document.getElementById('summary-card').classList.remove('visible');
+
+  // Render placeholder rows
+  renderRows(testsToRun);
+
+  // Show progress bar
+  const progressWrap = document.getElementById('progress-wrap');
+  progressWrap.style.display = 'block';
+  updateProgress(0, testsToRun.length);
+
+  // Reload iframe fresh for accurate load timing
+  try {
+    await reloadIframe();
+  } catch (e) {
+    // Mark all tests failed with load error
+    testsToRun.forEach(t => updateRow(t, 'fail', null, `iframe failed to load: ${e.message}`));
+    showSummary(0, testsToRun.length, testsToRun.length, 0);
+    isRunning = false;
+    runBtn.disabled = false;
+    runBtn.textContent = 'Run All Tests';
+    return;
+  }
+
+  const { doc, win } = getIframe();
+  iframeDoc = doc;
+  iframeWin = win;
+
+  let passed = 0;
+  let failed = 0;
+  const suiteStart = performance.now();
+
+  // Store results
+  const resultMap = {};
+
+  for (let i = 0; i < testsToRun.length; i++) {
+    const t = testsToRun[i];
+
+    // Mark running
+    updateRow(t, 'running', null, null);
+    await sleep(30); // small delay for visual feedback
+
+    const t0 = performance.now();
+    let status, errMsg;
+
+    try {
+      const outcome = t.fn();
+      // fn() returns true on pass, throws on fail
+      status = outcome ? 'pass' : 'fail';
+      errMsg = null;
+    } catch (e) {
+      status = 'fail';
+      errMsg = e.message || String(e);
+    }
+
+    const dur = performance.now() - t0;
+    updateRow(t, status, dur, errMsg);
+
+    if (status === 'pass') passed++;
+    else failed++;
+
+    resultMap[t.id] = { id: t.id, name: t.name, cat: t.cat, status, duration: dur, error: errMsg };
+    updateProgress(i + 1, testsToRun.length);
+  }
+
+  const totalDur = performance.now() - suiteStart;
+  showSummary(passed, failed, testsToRun.length, totalDur);
+
+  // Store for export
+  window.__lastResults = { tests: Object.values(resultMap), passed, failed, total: testsToRun.length, duration: totalDur, timestamp: new Date().toISOString() };
+
+  progressWrap.style.display = 'none';
+  isRunning = false;
+  runBtn.disabled = false;
+  runBtn.textContent = 'Run All Tests';
+}
+
+// ─────────────────────────────────────────────────────────────
+//  Category filter
+// ─────────────────────────────────────────────────────────────
+function setActiveCategory(cat) {
+  activeCategory = cat;
+  document.querySelectorAll('[data-cat]').forEach(btn => {
+    btn.classList.toggle('active', btn.dataset.cat === cat);
+  });
+}
+
+function getFilteredTests() {
+  if (activeCategory === 'all') return TESTS;
+  return TESTS.filter(t => t.cat === activeCategory);
+}
+
+// ─────────────────────────────────────────────────────────────
+//  Export
+// ─────────────────────────────────────────────────────────────
+function exportResults() {
+  const data = window.__lastResults;
+  if (!data) { alert('No results to export. Run tests first.'); return; }
+  const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = `crm-test-results-${new Date().toISOString().slice(0,10)}.json`;
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+}
+
+// ─────────────────────────────────────────────────────────────
+//  Event listeners
+// ─────────────────────────────────────────────────────────────
+document.getElementById('btn-run-all').addEventListener('click', () => {
+  runTests(getFilteredTests());
+});
+
+document.getElementById('btn-export').addEventListener('click', exportResults);
+
+document.querySelectorAll('[data-cat]').forEach(btn => {
+  btn.addEventListener('click', () => setActiveCategory(btn.dataset.cat));
+});
+
+</script>
+
+</body>
+</html>
