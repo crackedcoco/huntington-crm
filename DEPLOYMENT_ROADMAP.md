@@ -24,25 +24,25 @@
 
 ## P0 — Must have before any deployment
 
-- [ ] **P0.1 — Fix frontend data bugs**
-  - Research tab: show contact name, not just "Profile" badge
-  - Audits tab: show associated contact/business name on each card
-  - Contacts: not clickable, no detail view
-  - Interactions: no expand to show body/details
+- [x] **P0.1 — Fix frontend data bugs** *(done 2026-04-13)*
+  - Research tab: show contact name via `topic` field + business_id lookup
+  - Audits tab: show company name via `business_id` → businesses table enrichment
+  - Contacts: clickable rows with expand detail view
+  - Interactions: show `subject`/`body` fields correctly
 
-- [ ] **P0.2 — Add pagination**
-  - Contacts dumps all 169 on one page
-  - Audits has no pagination either
-  - API already supports `nextToken`
+- [x] **P0.2 — Add pagination** *(done 2026-04-13)*
+  - Contacts: 25 per page with full pagination controls
+  - Audits: 50 per page with pagination
+  - Page resets on search/filter/sort
 
 - [ ] **P0.3 — Fix test suite**
   - 28/43 tests fail because `CRM_DATA` is null in test context
   - Tests need to properly load `data.json` or mock the data
 
-- [ ] **P0.4 — Add favicon**
-  - 404 on every page load
+- [x] **P0.4 — Add favicon** *(done 2026-04-13)*
+  - SVG favicon: teal H on rounded square
 
-- [ ] **P0.5 — Branding cleanup**
+- [x] **P0.5 — Branding cleanup** *(done 2026-04-13)*
   - tests.html footer: "Jennifer CRM Test Suite" → "Huntington CRM Test Suite"
 
 ---
