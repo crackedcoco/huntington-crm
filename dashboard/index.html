@@ -888,7 +888,7 @@
 // ─────────────────────────────────────────────────────────────────────────────
 // DATA — loaded dynamically from data.json
 // ─────────────────────────────────────────────────────────────────────────────
-let CRM_DATA = null;
+var CRM_DATA = null; // var so it's accessible on window for test suite
 
 async function loadData() {
   // Show loading overlay without destroying the tab panel DOM
