@@ -665,6 +665,42 @@
       font-size: 14px;
     }
 
+    /* ── Pagination ── */
+    .pagination {
+      display: flex;
+      justify-content: center;
+      gap: 4px;
+      margin: 1.5rem 0;
+      flex-wrap: wrap;
+    }
+
+    .pagination button {
+      padding: 6px 12px;
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      background: var(--bg);
+      color: var(--text);
+      font-size: 13px;
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+
+    .pagination button:hover:not(:disabled) {
+      border-color: var(--accent);
+      color: var(--accent);
+    }
+
+    .pagination button.active {
+      background: var(--accent);
+      color: white;
+      border-color: var(--accent);
+    }
+
+    .pagination button:disabled {
+      opacity: 0.4;
+      cursor: not-allowed;
+    }
+
     /* ── Footer ── */
     footer {
       background: var(--surface);
@@ -777,8 +813,8 @@
   <!-- Contacts Tab -->
   <div id="tab-contacts" class="tab-panel">
     <div class="filter-bar">
-      <input class="search-input" type="search" id="contacts-search" placeholder="Search name, company, email, tags…" oninput="renderContacts()">
-      <select class="filter-select" id="contacts-location" onchange="renderContacts()">
+      <input class="search-input" type="search" id="contacts-search" placeholder="Search name, company, email, tags…" oninput="contactsPage=0;renderContacts();">
+      <select class="filter-select" id="contacts-location" onchange="contactsPage=0;renderContacts();">
         <option value="">All Locations</option>
       </select>
       <span class="results-count" id="contacts-count"></span>
@@ -798,12 +834,13 @@
         <tbody id="contacts-tbody"></tbody>
       </table>
     </div>
+    <div id="contacts-pagination"></div>
   </div>
 
   <!-- Audits Tab -->
   <div id="tab-audits" class="tab-panel">
     <div class="filter-bar">
-      <select class="filter-select" id="audits-type" onchange="renderAudits()">
+      <select class="filter-select" id="audits-type" onchange="auditsPage=0;renderAudits();">
         <option value="">All Types</option>
         <option value="digital_presence">Digital Presence</option>
         <option value="swot">SWOT</option>
@@ -811,6 +848,7 @@
       <span class="results-count" id="audits-count"></span>
     </div>
     <div id="audits-list"></div>
+    <div id="audits-pagination"></div>
   </div>
 
   <!-- Research Tab -->
@@ -1117,6 +1155,10 @@ function renderDashboard() {
 // CONTACTS
 // ─────────────────────────────────────────────────────────────────────────────
 let contactsSortField = 'created_at';
+const CONTACTS_PER_PAGE = 25;
+let contactsPage = 0;
+const AUDITS_PER_PAGE = 50;
+let auditsPage = 0;
 let contactsSortDir = 'desc';
 let expandedContactId = null;
 
@@ -1138,6 +1180,7 @@ function sortContacts(field) {
     contactsSortField = field;
     contactsSortDir = 'asc';
   }
+  contactsPage = 0;
   renderContacts();
 }
 
@@ -1165,7 +1208,15 @@ function renderContacts() {
     return 0;
   });
 
-  document.getElementById('contacts-count').textContent = `${filtered.length} contacts`;
+  const totalFiltered = filtered.length;
+  const totalPages = Math.ceil(totalFiltered / CONTACTS_PER_PAGE);
+  if (contactsPage >= totalPages) contactsPage = Math.max(0, totalPages - 1);
+  const pageStart = contactsPage * CONTACTS_PER_PAGE;
+  const pageEnd = Math.min(pageStart + CONTACTS_PER_PAGE, totalFiltered);
+  const paged = filtered.slice(pageStart, pageEnd);
+
+  document.getElementById('contacts-count').textContent =
+    `${totalFiltered} contacts` + (totalPages > 1 ? ` · page ${contactsPage + 1} of ${totalPages}` : '');
 
   // Update sort indicators
   document.querySelectorAll('#contacts-table th').forEach(th => {
@@ -1179,19 +1230,20 @@ function renderContacts() {
   }
 
   const tbody = document.getElementById('contacts-tbody');
-  if (filtered.length === 0) {
+  if (paged.length === 0) {
     tbody.innerHTML = `<tr><td colspan="6"><div class="empty-state">No contacts match your search.</div></td></tr>`;
+    document.getElementById('contacts-pagination').innerHTML = '';
     return;
   }
 
   let html = '';
-  filtered.forEach(c => {
+  paged.forEach(c => {
     const tags = parseTags(c.tags);
     const tagHtml = tags.slice(0,5).map(t => `<span class="tag-pill">${esc(t)}</span>`).join('') +
       (tags.length > 5 ? `<span class="tag-pill" style="background:rgba(100,116,139,0.1);color:#64748b">+${tags.length - 5}</span>` : '');
     const isExpanded = expandedContactId === c.id;
 
-    html += `<tr class="clickable-row ${isExpanded ? 'expanded-row' : ''}" onclick="toggleContactExpand(${c.id})">
+    html += `<tr class="clickable-row ${isExpanded ? 'expanded-row' : ''}" onclick="toggleContactExpand('${c.id}')">
       <td>
         <div style="display:flex;align-items:center;gap:8px;">
           <div class="recent-avatar" style="width:28px;height:28px;font-size:11px;">${esc(initials(c.name))}</div>
@@ -1214,6 +1266,23 @@ function renderContacts() {
   });
 
   tbody.innerHTML = html;
+
+  // Pagination controls
+  let pagHtml = '';
+  if (totalPages > 1) {
+    pagHtml += `<div class="pagination">`;
+    pagHtml += `<button ${contactsPage === 0 ? 'disabled' : ''} onclick="contactsPage=0;renderContacts();">&laquo;</button>`;
+    pagHtml += `<button ${contactsPage === 0 ? 'disabled' : ''} onclick="contactsPage--;renderContacts();">&lsaquo; Prev</button>`;
+    const startPage = Math.max(0, contactsPage - 2);
+    const endPage = Math.min(totalPages, startPage + 5);
+    for (let p = startPage; p < endPage; p++) {
+      pagHtml += `<button class="${p === contactsPage ? 'active' : ''}" onclick="contactsPage=${p};renderContacts();">${p+1}</button>`;
+    }
+    pagHtml += `<button ${contactsPage >= totalPages-1 ? 'disabled' : ''} onclick="contactsPage++;renderContacts();">Next &rsaquo;</button>`;
+    pagHtml += `<button ${contactsPage >= totalPages-1 ? 'disabled' : ''} onclick="contactsPage=${totalPages-1};renderContacts();">&raquo;</button>`;
+    pagHtml += `</div>`;
+  }
+  document.getElementById('contacts-pagination').innerHTML = pagHtml;
 }
 
 function toggleContactExpand(id) {
@@ -1230,17 +1299,21 @@ function buildContactExpand(c) {
     ? '<div class="expand-item"><span>No audits</span></div>'
     : audits.map(a => `
         <div class="expand-item">
-          <strong>${esc(a.company)}</strong>
-          <span>${auditTypeBadge(a.audit_type)} &nbsp;${esc(a.summary)} &nbsp;<span style="color:var(--text-muted)">${fmtDate(a.created_at)}</span></span>
+          <strong>${esc(a.company || (a.business_id ? getBusinessName(a.business_id) : '') || '')}</strong>
+          <span>${auditTypeBadge(a.audit_type)} &nbsp;${esc(a.summary || '')} &nbsp;<span style="color:var(--text-muted)">${fmtDate(a.created_at)}</span></span>
         </div>`).join('');
 
   let researchHtml = research.length === 0
     ? '<div class="expand-item"><span>No research profiles</span></div>'
-    : research.map(r => `
+    : research.map(r => {
+        const subj = r.topic || r.subject || 'Untitled';
+        const body = r.body || r.findings || '';
+        return `
         <div class="expand-item">
-          <strong>${esc(r.subject)}</strong>
-          <span>${esc(r.findings.substring(0,160))}${r.findings.length > 160 ? '…' : ''}</span>
-        </div>`).join('');
+          <strong>${esc(subj)}</strong>
+          <span>${esc(body.substring(0,160))}${body.length > 160 ? '…' : ''}</span>
+        </div>`;
+      }).join('');
 
   let interactionHtml = interactions.length === 0
     ? '<div class="expand-item"><span>No interactions</span></div>'
@@ -1248,7 +1321,7 @@ function buildContactExpand(c) {
         .map(i => `
           <div class="expand-item">
             <strong>${interactionBadge(i.interaction_type)} ${fmtDate(i.created_at)}</strong>
-            <span>${esc(i.summary)}</span>
+            <span>${esc(i.subject || i.summary || '')}</span>
           </div>`).join('');
 
   const notesSection = c.notes ? `
@@ -1295,15 +1368,24 @@ function renderAudits() {
   let filtered = CRM_DATA.audits.filter(a => !typeFilter || a.audit_type === typeFilter);
   filtered = [...filtered].sort((a,b) => new Date(b.created_at) - new Date(a.created_at));
 
-  document.getElementById('audits-count').textContent = `${filtered.length} audits`;
+  const totalFiltered = filtered.length;
+  const totalPages = Math.ceil(totalFiltered / AUDITS_PER_PAGE);
+  if (auditsPage >= totalPages) auditsPage = Math.max(0, totalPages - 1);
+  const pageStart = auditsPage * AUDITS_PER_PAGE;
+  const pageEnd = Math.min(pageStart + AUDITS_PER_PAGE, totalFiltered);
+  const paged = filtered.slice(pageStart, pageEnd);
+
+  document.getElementById('audits-count').textContent =
+    `${totalFiltered} audits` + (totalPages > 1 ? ` · page ${auditsPage + 1} of ${totalPages}` : '');
 
   const el = document.getElementById('audits-list');
-  if (filtered.length === 0) {
+  if (paged.length === 0) {
     el.innerHTML = `<div class="empty-state">No audits match the filter.</div>`;
+    document.getElementById('audits-pagination').innerHTML = '';
     return;
   }
 
-  el.innerHTML = filtered.map(a => {
+  el.innerHTML = paged.map(a => {
     const contactName = a.contact_id ? getContactName(a.contact_id) : null;
     const companyName = a.company || (a.business_id ? getBusinessName(a.business_id) : null) || '';
     const ratingBadge = a.google_rating != null && a.google_rating > 0
@@ -1327,6 +1409,23 @@ function renderAudits() {
         <div class="audit-date">${fmtDate(a.created_at)}</div>
       </div>`;
   }).join('');
+
+  // Audits pagination
+  let pagHtml = '';
+  if (totalPages > 1) {
+    pagHtml += `<div class="pagination">`;
+    pagHtml += `<button ${auditsPage === 0 ? 'disabled' : ''} onclick="auditsPage=0;renderAudits();">&laquo;</button>`;
+    pagHtml += `<button ${auditsPage === 0 ? 'disabled' : ''} onclick="auditsPage--;renderAudits();">&lsaquo; Prev</button>`;
+    const startPage = Math.max(0, auditsPage - 2);
+    const endPage = Math.min(totalPages, startPage + 5);
+    for (let p = startPage; p < endPage; p++) {
+      pagHtml += `<button class="${p === auditsPage ? 'active' : ''}" onclick="auditsPage=${p};renderAudits();">${p+1}</button>`;
+    }
+    pagHtml += `<button ${auditsPage >= totalPages-1 ? 'disabled' : ''} onclick="auditsPage++;renderAudits();">Next &rsaquo;</button>`;
+    pagHtml += `<button ${auditsPage >= totalPages-1 ? 'disabled' : ''} onclick="auditsPage=${totalPages-1};renderAudits();">&raquo;</button>`;
+    pagHtml += `</div>`;
+  }
+  document.getElementById('audits-pagination').innerHTML = pagHtml;
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
