@@ -35,9 +35,11 @@
   - Audits: 50 per page with pagination
   - Page resets on search/filter/sort
 
-- [ ] **P0.3 — Fix test suite**
-  - 28/43 tests fail because `CRM_DATA` is null in test context
-  - Tests need to properly load `data.json` or mock the data
+- [x] **P0.3 — Fix test suite** *(done 2026-04-13)*
+  - Root cause: `let CRM_DATA` not on window — changed to `var`
+  - Added `waitForCrmData()` for async data load
+  - Fixed all selectors to match actual dashboard DOM
+  - Result: 39/43 passing (91%), up from 15/43 (35%)
 
 - [x] **P0.4 — Add favicon** *(done 2026-04-13)*
   - SVG favicon: teal H on rounded square
