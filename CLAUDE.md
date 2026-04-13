@@ -2,61 +2,170 @@
 
 Standalone CRM spun off from the Jennifer project. Contact management, pipeline tracking, business intelligence, and prospect scoring for Huntington Analytics.
 
-## Architecture
+**Used by agents:** Jennifer, Camilla, card-scanner, morning-briefing, lead-scanner
 
-### Data Layer (dual-write)
-- **SQLite** (`~/.jennifer/contacts.db`) — authoritative write path, offline-safe, fast
-- **Postgres** (`business_intel`) — unified read layer with 165+ contacts, 71K businesses, 800K reviews
-- **DynamoDB** (`jennjim-main-{stage}`) — multi-tenant API backend (shared with Jennifer for now)
+---
 
-### Code Layout
-```
-backend/crm/handler.py      — DynamoDB REST API (Lambda handler)
-backend/shared/              — auth, db, features, rate_limit, response (forked from Jennifer)
-local/contacts_db.py         — SQLite CRM + Postgres unified queries
-local/pg_mirror.py           — write-through replication to business_intel
-dashboard/index.html         — web UI (deploy target: crm.huntington-analytics.com)
-infrastructure/stacks/       — CDK stack (TODO)
-```
+## Data Architecture
 
-### API Endpoints
+### Dual-Write Stack
+- **SQLite** (`~/.jennifer/contacts.db`) — authoritative write path; offline-safe, fast, always available
+- **Postgres** (`business_intel`) — unified read layer; 165+ contacts, 71K businesses, 800K reviews
+- **DynamoDB** (`jennjim-main-{stage}`) — multi-tenant API backend (shared with Jennifer)
+
+### Data Flow
 ```
-GET    /api/contacts              — list contacts (paginated, searchable)
-POST   /api/contacts              — create contact
-GET    /api/contacts/{id}         — get contact + audits + interactions
-PUT    /api/contacts/{id}         — update contact
-DELETE /api/contacts/{id}         — soft delete
-POST   /api/contacts/{id}/audits  — create audit (auto-logs interaction)
-GET    /api/audits                — list audits
-POST   /api/contacts/{id}/interactions — log interaction
-GET    /api/interactions          — list interactions
+Business Card / Meeting / Research
+        ↓
+contacts_db.py (SQLite write)
+        ↓
+pg_mirror.py (Postgres mirror)
+        ↓
+export_data.py → data.json
+        ↓
+S3 → CloudFront → crm.huntington-analytics.com
 ```
 
-### Deploy Target
-- **Web UI:** `crm.huntington-analytics.com` (S3 + CloudFront)
-- **SSL:** `*.huntington-analytics.com` wildcard cert (arn:aws:acm:us-east-1:168362164058:certificate/b9920d78-85e4-4ac3-925b-d91903ec333a)
-- **AWS user:** amplify-dev
+**Rule:** SQLite is the write path. Postgres is the read layer. If Postgres is down, writes queue to `~/.jennifer/pg_replay.jsonl` and replay on reconnect.
 
-### Deploying Dashboard
+---
+
+## Infrastructure IDs
+
+| Resource | ID / Value |
+|---|---|
+| S3 bucket | `crm.huntington-analytics.com` (us-east-1) |
+| CloudFront distribution | `E3A32Y6TJIQUHQ` |
+| CloudFront domain | `d2wgr23thcco8g.cloudfront.net` |
+| Route53 hosted zone | `Z07526023IW01YWAF7V2J` (huntington-analytics.com) |
+| SSL cert ARN | `arn:aws:acm:us-east-1:168362164058:certificate/b9920d78-85e4-4ac3-925b-d91903ec333a` |
+| SSL cert scope | `*.huntington-analytics.com` wildcard |
+| AWS user | `amplify-dev` |
+
+---
+
+## Deploy Commands
+
+The dashboard is a static site. Data freshness depends on re-running the export script after any write.
+
 ```bash
+# Generate fresh data from SQLite
+python3 scripts/export_data.py
+
+# Sync to S3
 aws s3 sync dashboard/ s3://crm.huntington-analytics.com/ --region us-east-1
-aws cloudfront create-invalidation --distribution-id <TBD> --paths "/*"
+
+# Invalidate CloudFront cache
+aws cloudfront create-invalidation --distribution-id E3A32Y6TJIQUHQ --paths "/*"
 ```
 
-## Key Tables (Postgres business_intel)
-- `contacts` — 165+ rows across all sources (Jennifer, crm-db RDS imports)
-- `businesses` — 71K scraped businesses
-- `reviews` — 800K+ reviews
-- `business_health` — scored prospects (5,274 rows)
-- `audits`, `interactions`, `research` — mirrored from SQLite
+---
 
-## Key Tables (SQLite ~/.jennifer/contacts.db)
-- `contacts` — 40 personal contacts (business cards, meetings, referrals)
-- `audits`, `research`, `interactions` — linked to contacts
-- `business_health`, `health_benchmarks` — local scoring cache
+## API Endpoints
+
+Base: DynamoDB-backed Lambda handler at `backend/crm/handler.py`
+
+```
+GET    /api/contacts                     list contacts (paginated, searchable)
+POST   /api/contacts                     create contact
+GET    /api/contacts/{id}                get contact + audits + interactions
+PUT    /api/contacts/{id}                update contact
+DELETE /api/contacts/{id}                soft delete
+POST   /api/contacts/{id}/audits         create audit (auto-logs interaction)
+GET    /api/audits                        list audits
+POST   /api/contacts/{id}/interactions   log interaction
+GET    /api/interactions                  list interactions
+```
+
+---
+
+## Key Tables
+
+### Postgres (`business_intel`)
+| Table | Description |
+|---|---|
+| `contacts` | 165+ rows across all sources (Jennifer, crm-db RDS imports) |
+| `businesses` | 71K scraped businesses |
+| `reviews` | 800K+ reviews |
+| `business_health` | Scored prospects (5,274 rows) |
+| `audits` | Mirrored from SQLite |
+| `interactions` | Mirrored from SQLite |
+| `research` | Mirrored from SQLite |
+
+### SQLite (`~/.jennifer/contacts.db`)
+| Table | Description |
+|---|---|
+| `contacts` | 40 personal contacts (business cards, meetings, referrals) |
+| `audits` | Linked to contacts |
+| `research` | Linked to contacts |
+| `interactions` | Linked to contacts |
+| `business_health` | Local scoring cache |
+| `health_benchmarks` | Local scoring cache |
+
+---
+
+## File Reference
+
+```
+backend/crm/handler.py              DynamoDB REST API Lambda handler
+backend/crm/__init__.py             Package init
+backend/shared/auth.py              Auth utilities (forked from Jennifer)
+backend/shared/db.py                DB connection helpers
+backend/shared/features.py          Feature flag support
+backend/shared/rate_limit.py        Rate limiting logic
+backend/shared/response.py          Standardized HTTP response helpers
+backend/shared/__init__.py          Package init
+local/contacts_db.py                SQLite CRM + Postgres unified query interface
+local/pg_mirror.py                  Write-through replication to business_intel Postgres
+dashboard/index.html                Static web UI (deploy target: crm.huntington-analytics.com)
+dashboard/tests.html                Dashboard test harness
+dashboard/data.json                 Exported data snapshot (generated by export_data.py)
+scripts/export_data.py              Reads SQLite, writes dashboard/data.json for static deployment
+infrastructure/stacks/              CDK infrastructure stack (TODO)
+CLAUDE.md                           This file — agent reference for architecture, infra, and conventions
+```
+
+---
+
+## Agent Integration
+
+### Importing contacts_db from another repo
+
+```python
+import importlib.util
+spec = importlib.util.spec_from_file_location(
+    'cdb',
+    '/Users/edward/Documents/huntington-crm/local/contacts_db.py'
+)
+cdb = importlib.util.module_from_spec(spec)
+spec.loader.exec_module(cdb)
+```
+
+### Agent responsibilities after writes
+
+After any agent writes a contact, audit, interaction, or research record:
+1. Run `python3 /Users/edward/Documents/huntington-crm/scripts/export_data.py` to regenerate `data.json`
+2. Sync and invalidate (commands above) to push the update to the live dashboard
+
+The dashboard is purely static — it does not auto-refresh. Without re-running the export, the site will show stale data.
+
+### Agent access summary
+
+| Agent | Reads | Writes |
+|---|---|---|
+| Jennifer | contacts, interactions, research | contacts, interactions, audits |
+| Camilla | contacts, business_health, businesses | contacts, interactions, audits |
+| card-scanner | — | contacts (new cards) |
+| morning-briefing | contacts, interactions, business_health | — |
+| lead-scanner | businesses, business_health | contacts (qualified leads) |
+
+---
 
 ## Conventions
-1. SQLite is the write path. Postgres is the read layer.
-2. Every write mirrors to Postgres via `pg_mirror.py`. If Postgres is down, writes queue to `~/.jennifer/pg_replay.jsonl`.
-3. Never delete contacts — soft delete only.
-4. The dashboard must work offline against SQLite if the API is unavailable.
+
+1. **SQLite is the write path.** Never write directly to Postgres. Always go through `contacts_db.py`.
+2. **Every write mirrors to Postgres** via `pg_mirror.py`. If Postgres is down, writes queue to `~/.jennifer/pg_replay.jsonl`.
+3. **Never hard-delete contacts.** Soft delete only (`deleted_at` timestamp or `active = false`).
+4. **Dashboard must work offline** against SQLite if the API or network is unavailable.
+5. **After any write, re-export and redeploy** to keep the static dashboard current.
+6. **Territory scans filter to businesses NOT already in contacts.** Never re-import known contacts as new prospects.

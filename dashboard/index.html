@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Jennifer CRM — Huntington Analytics</title>
+  <title>Huntington Analytics CRM</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
@@ -708,19 +708,20 @@
 <header class="header">
   <div class="header-top">
     <div class="header-title">
-      <h1>Jennifer CRM</h1>
+      <h1>Huntington Analytics CRM</h1>
       <p>Huntington Analytics — West Virginia Network</p>
+      <p id="data-generated-at" style="font-size:11px;color:var(--text-muted);margin-top:2px;display:none;"></p>
     </div>
     <div class="stats-bar">
-      <div class="stats-bar-item"><strong>32</strong> contacts</div>
+      <div class="stats-bar-item"><strong id="stat-bar-contacts">—</strong> contacts</div>
       <div class="stats-bar-sep"></div>
-      <div class="stats-bar-item"><strong>25</strong> audits</div>
+      <div class="stats-bar-item"><strong id="stat-bar-audits">—</strong> audits</div>
       <div class="stats-bar-sep"></div>
-      <div class="stats-bar-item"><strong>9</strong> research</div>
+      <div class="stats-bar-item"><strong id="stat-bar-research">—</strong> research</div>
       <div class="stats-bar-sep"></div>
-      <div class="stats-bar-item"><strong>39</strong> interactions</div>
+      <div class="stats-bar-item"><strong id="stat-bar-interactions">—</strong> interactions</div>
       <div class="stats-bar-sep"></div>
-      <div class="stats-bar-item"><strong>11</strong> locations</div>
+      <div class="stats-bar-item"><strong id="stat-bar-locations">—</strong> locations</div>
     </div>
   </div>
   <nav class="nav">
@@ -739,19 +740,19 @@
   <div id="tab-dashboard" class="tab-panel active">
     <div class="stat-grid">
       <div class="stat-card">
-        <div class="stat-number">32</div>
+        <div class="stat-number" id="dash-stat-contacts">—</div>
         <div class="stat-label">Contacts</div>
       </div>
       <div class="stat-card">
-        <div class="stat-number">25</div>
+        <div class="stat-number" id="dash-stat-audits">—</div>
         <div class="stat-label">Audits</div>
       </div>
       <div class="stat-card">
-        <div class="stat-number">9</div>
+        <div class="stat-number" id="dash-stat-research">—</div>
         <div class="stat-label">Research Profiles</div>
       </div>
       <div class="stat-card">
-        <div class="stat-number">39</div>
+        <div class="stat-number" id="dash-stat-interactions">—</div>
         <div class="stat-label">Interactions</div>
       </div>
     </div>
@@ -841,147 +842,86 @@
 </main>
 
 <footer>
-  Jennifer CRM &mdash; Huntington Analytics &nbsp;|&nbsp; Updated April 2026
+  Huntington Analytics CRM &mdash; Huntington Analytics &nbsp;|&nbsp; Updated April 2026
 </footer>
 
 <script>
 // ─────────────────────────────────────────────────────────────────────────────
-// DATA
+// DATA — loaded dynamically from data.json
 // ─────────────────────────────────────────────────────────────────────────────
-const CRM_DATA = {
-  "stats": {
-    "contacts": 32,
-    "audits": 25,
-    "research": 9,
-    "interactions": 39,
-    "locations": [
-      "Athens, WV",
-      "Barboursville, WV",
-      "Charleston, WV",
-      "Davis, West Virginia",
-      "Huntington & Kanawha Valley, WV",
-      "Huntington, WV",
-      "Morgantown, WV",
-      "Slippery Rock, PA",
-      "Summersville, WV",
-      "Weirton, WV",
-      "West Virginia"
-    ]
-  },
-  "contacts": [
-    {"id":33,"name":"Bryan Shaw","title":"Director of Entrepreneurial Development","company":"Advantage Valley","email":"bshaw@advantagevalley.com","phone":"304-352-1165","phone2":"","website":"advantagevalley.com","address":"","location":"Charleston, WV","source":"business card","tags":"[\"economic-development\",\"entrepreneurship\",\"charleston\",\"advantage-valley\",\"director\"]","notes":"","created_at":"2026-04-03T19:45:09.362810","updated_at":"2026-04-03T19:45:09.362810"},
-    {"id":32,"name":"John Perry III","title":"General Manager","company":"Grass Busters Lawn Care & Landscaping","email":"E: john@grassbusterswv.com","phone":"304-617-7780","phone2":"","website":"www.grassbusterswv.com","address":"","location":"Huntington, WV","source":"business card (via Daniel Parlock)","tags":"[\"landscaping\",\"lawn-care\",\"local-business\",\"huntington\"]","notes":"","created_at":"2026-04-03T18:54:22.662518","updated_at":"2026-04-03T18:54:22.662518"},
-    {"id":31,"name":"Chris Lowe","title":"Owner/Operator","company":"Synergy HomeCare of Barboursville / Proctorville","email":"chrislowe@synergyhomecare.com","phone":"304-202-7845","phone2":"","website":"synergyhomecare.com","address":"","location":"Barboursville, WV","source":"business card (Community Leaders Breakfast, Christ Temple Church)","tags":"[\"homecare\",\"healthcare\",\"franchise\",\"barboursville\",\"proctorville\",\"tri-state\",\"leaders-breakfast\"]","notes":"","created_at":"2026-04-03T15:45:29.602821","updated_at":"2026-04-03T15:45:29.602821"},
-    {"id":30,"name":"John H. Pruitt","title":"Founder & CEO","company":"The 3:0 Initiative","email":"jpruitt@the3ointiative.org","phone":"681-888-0118","phone2":"","website":"www.the3oinitiative.org","address":"","location":"Huntington, WV","source":"business card (Community Leaders Breakfast, Christ Temple Church)","tags":"[\"nonprofit\",\"founder\",\"ceo\",\"community\",\"faith\",\"huntington\",\"leaders-breakfast\"]","notes":"","created_at":"2026-04-03T14:12:25.104810","updated_at":"2026-04-03T14:12:25.104810"},
-    {"id":29,"name":"Jason Skaggs","title":"Home Inspector & Field Sales Tech","company":"Skaggs Electrical Repairs & Home Inspections","email":"jskaggshomeinspector25@gmail.com","phone":"304-633-4614","phone2":"","website":"barboursvillegenerators.com","address":"","location":"Huntington & Kanawha Valley, WV","source":"dot.cards digital business card","tags":"[\"electrical\",\"home-inspection\",\"generator\",\"contractor\",\"entrepreneur\",\"barboursville\",\"client\"]","notes":"","created_at":"2026-04-02T18:04:20.565315","updated_at":"2026-04-02T18:04:20.565315"},
-    {"id":28,"name":"Tia Fix Rumbaugh","title":"Huntington City Council District 3 / Cabell County Commission Candidate","company":"City of Huntington / Forest Adventure Co-Op / So Social LLC","email":"forestadventurecoop@gmail.com","phone":"","phone2":"","website":"facebook.com/TiaFixHuntington","address":"","location":"Huntington, WV","source":"research (Edward knows her from Huntington community)","tags":"[\"huntington\",\"city-council\",\"elected-official\",\"early-childhood\",\"montessori\",\"coalfield\",\"comedy\",\"ai-annotation\",\"civic\"]","notes":"Tia \"Fix\" Rumbaugh. Huntington City Council District 3 (elected 2020, re-elected 2024). Running for Cabell County Commission 2026. NYU grad (BS Speech/Mass Comm, 2000). Taught ESL in Korea/China/Thailand. Founded So Social LLC (Montessori daycare) and Forest Adventure Co-Op (outdoor childcare, 24 acres). Also does AI data annotation work. Standup comedian. Proposed Marshall think tank collab and Coalfield Development partnership on city council. Ceredo-Kenova HS 1996. Age ~46.","created_at":"2026-04-02T15:28:41.514592","updated_at":"2026-04-02T15:28:41.514592"},
-    {"id":27,"name":"Thomas Goodman","title":"Sales Representative","company":"Diversified Technology","email":"thomas@diversifiedts.com","phone":"304-901-1050","phone2":"","website":"diversifiedts.com","address":"","location":"West Virginia","source":"business card","tags":"[\"it-services\",\"technology\",\"managed-services\",\"sales\"]","notes":"","created_at":"2026-04-02T14:56:13.511232","updated_at":"2026-04-02T14:56:13.511232"},
-    {"id":26,"name":"Sarah Frances Lyon","title":"Media Executive","company":"WSAZ-3","email":"sarah.lyon@wsaz.com","phone":"304-781-3214","phone2":"","website":"wsaz.com","address":"","location":"Huntington, WV","source":"business card (Huntington)","tags":"[\"media\",\"tv\",\"wsaz\",\"advertising\",\"sales\",\"huntington\",\"gray-television\"]","notes":"","created_at":"2026-04-02T14:32:12.278272","updated_at":"2026-04-02T14:32:12.278272"},
-    {"id":25,"name":"Brandon Dennison","title":"VP for Economic and Workforce Development","company":"Marshall University / Coalfield Development Corporation","email":"dennison9@marshall.edu","phone":"304-696-2944","phone2":"304-501-4755","website":"coalfield-development.org","address":"","location":"Huntington, WV","source":"Focus Forward 2026 speaker (workforce panel co-moderator)","tags":"[\"marshall\",\"economic-development\",\"workforce\",\"coalfield\",\"ashoka-fellow\",\"heinz-award\",\"focus-forward-2026\",\"key-contact\"]","notes":"VP Economic & Workforce Development at Marshall + Executive President of Coalfield Development Corp (Wayne County). BA History Shepherd University, MPA Indiana University. Ashoka Fellow, Heinz Award winner (2019), JMK Social Innovation Prize. Guided $63M+ in federal revitalization grants to WV. Office: Old Main 213. Also: bdennison@coalfield-development.org. Co-moderated Focus Forward workforce panel April 1 2026. Highlawn Accelerate / community development overlap with Edward.","created_at":"2026-04-02T13:40:02.179931","updated_at":"2026-04-02T13:40:02.179931"},
-    {"id":24,"name":"Shivani Trivedi","title":"Unknown","company":"Unknown","email":"","phone":"","phone2":"","website":"","address":"","location":"Morgantown, WV","source":"Focus Forward 2026 attendee (LinkedIn QR code scan)","tags":"[\"morgantown\",\"focus-forward-2026\"]","notes":"LinkedIn QR code scanned at Focus Forward. Confirmed Morgantown WV resident (~age 38). Also has Alexandria VA address. Role and employer not confirmed — need LinkedIn URL to complete profile.","created_at":"2026-04-02T13:38:20.660790","updated_at":"2026-04-02T13:38:20.660790"},
-    {"id":23,"name":"Leonardo Peele","title":"CS Senior (graduating May 2026)","company":"West Virginia University — Statler College","email":"lsp00013@mix.wvu.edu","phone":"301-792-0789","phone2":"","website":"","address":"","location":"Morgantown, WV","source":"Focus Forward 2026 attendee (LinkedIn screenshot)","tags":"[\"wvu\",\"computer-science\",\"cmu-heinz\",\"mitre\",\"drone-robotics\",\"cybersecurity\",\"focus-forward-2026\"]","notes":"BS Computer Science + Data Science minor, WVU. FARO Lab drone robotics researcher. MITRE Corporation intern (Summer 2024). CMU Heinz College IT Lab Summer Security Intensive fellow (Summer 2025). Statler College Ambassador. From Rockville, MD. Studied abroad at University of Antwerp.","created_at":"2026-04-02T13:38:20.659318","updated_at":"2026-04-02T13:38:20.659318"},
-    {"id":22,"name":"Evan Lubinsky","title":"Licensed Real Estate Agent","company":"Clear Choice Enterprises","email":"","phone":"724-504-7259","phone2":"","website":"clearchoiceenterprises.com","address":"","location":"Slippery Rock, PA","source":"Focus Forward 2026 attendee (LinkedIn screenshot)","tags":"[\"real-estate\",\"western-pa\",\"focus-forward-2026\"]","notes":"Slippery Rock University alum. PA license RS369547. Clear Choice also operates as Pittsburgh Business Brokers. Butler County, PA.","created_at":"2026-04-02T13:38:20.657847","updated_at":"2026-04-02T13:38:20.657847"},
-    {"id":21,"name":"Diane Palmieri","title":"Assistant Professor / Research & Instruction Services Librarian","company":"Marshall University — University Libraries","email":"palmierid@marshall.edu","phone":"304-696-6456","phone2":"","website":"marshall.edu/library","address":"","location":"Huntington, WV","source":"Focus Forward 2026 attendee (badge photo)","tags":"[\"marshall\",\"librarian\",\"nonprofit-management\",\"grants\",\"literacy\",\"focus-forward-2026\"]","notes":"Research librarian specializing in nonprofit mgmt, public admin, social activism. Tri-State Literacy Council board member. ALA Libraries Transform Communities grant reviewer. Previously at Huntington Museum of Art. Certified yoga instructor. Prior name: Blakemore.","created_at":"2026-04-02T13:38:20.656003","updated_at":"2026-04-02T13:38:20.656003"},
-    {"id":20,"name":"Joshua Meadows","title":"Service Assistant Professor & Executive Director, Data Driven WV","company":"West Virginia University — Chambers College of Business","email":"jtmeadows@mail.wvu.edu","phone":"","phone2":"","website":"business.wvu.edu/research-outreach/data-driven-wv","address":"","location":"Morgantown, WV","source":"Focus Forward 2026 attendee (badge photo)","tags":"[\"wvu\",\"ai\",\"data-analytics\",\"workforce\",\"bead-broadband\",\"tedx\",\"focus-forward-2026\"]","notes":"Co-developed WVU Applied AI & Data Analytics BS degree. Executive Director of Data Driven WV (student consulting teams). Core Planning Team for WV $1.2B BEAD broadband program. TEDxWVU speaker. 5 awards in 2 years including 2025 WVU Impact Award. First-gen college student. Natural collaborator for AI + workforce + economic development.","created_at":"2026-04-02T13:38:20.653810","updated_at":"2026-04-02T13:38:20.653810"},
-    {"id":19,"name":"Jorn Earl Otte","title":"West Virginia SMART529 Consultant","company":"Hartford Funds","email":"OtteSMART529@SMART529.com","phone":"304-890-1343","phone2":"","website":"www.SMART529.com","address":"","location":"West Virginia","source":"business card (Focus Forward 2026, WVU)","tags":"[\"finance\",\"529-plan\",\"education-savings\",\"hartford-funds\",\"focus-forward-2026\"]","notes":"","created_at":"2026-04-01T21:27:24.244249","updated_at":"2026-04-01T21:27:24.244249"},
-    {"id":18,"name":"C. Melissa McKenna","title":"CEO & President","company":"Wilcat Associates","email":"melissa@wilcatllc.com","phone":"703-214-5229","phone2":"","website":"www.wilcatllc.com","address":"","location":"Morgantown, WV","source":"business card (Focus Forward 2026, WVU)","tags":"[\"government-strategy\",\"consulting\",\"ceo\",\"morgantown\",\"focus-forward-2026\"]","notes":"","created_at":"2026-04-01T21:09:55.470490","updated_at":"2026-04-01T21:09:55.470490"},
-    {"id":17,"name":"Jamie Summerlin","title":"Founder & CEO","company":"Guidon Creative","email":"jamie@guidoncreative.com","phone":"304-826-0311","phone2":"","website":"guidoncreative.com","address":"","location":"Summersville, WV","source":"business card (Focus Forward 2026, WVU)","tags":"[\"creative-agency\",\"web-design\",\"event-management\",\"consulting\",\"founder\",\"focus-forward-2026\"]","notes":"","created_at":"2026-04-01T19:37:53.433097","updated_at":"2026-04-01T19:37:53.433097"},
-    {"id":16,"name":"Alex Snyder","title":"Executive Director","company":"Appalachian Expeditions","email":"alex@appalachianexpeditions.org","phone":"770-899-7529","phone2":"","website":"www.appalachianexpeditions.org","address":"","location":"Davis, West Virginia","source":"business card (Focus Forward 2026, WVU)","tags":"[\"nonprofit\",\"outdoor-education\",\"appalachia\",\"expeditions\",\"focus-forward-2026\"]","notes":"","created_at":"2026-04-01T16:32:46.068972","updated_at":"2026-04-01T16:32:46.068972"},
-    {"id":15,"name":"James Blankenship","title":"Career Services Coordinator","company":"Concord University","email":"jblankenship@concord.edu","phone":"304-384-5412","phone2":"","website":"concord.edu/careerservices","address":"","location":"Athens, WV","source":"business card (Focus Forward 2026, WVU)","tags":"[\"higher-ed\",\"career-services\",\"concord\",\"focus-forward-2026\"]","notes":"","created_at":"2026-04-01T14:24:28.104134","updated_at":"2026-04-01T14:24:28.104134"},
-    {"id":14,"name":"Char Sample, Ph.D.","title":"Associate Professor — EECS; ICS Faculty Fellow","company":"Marshall University — Institute for Cyber Security","email":"samplec@marshall.edu","phone":"304-696-6418","phone2":"","website":"marshall.edu","address":"","location":"Huntington, WV","source":"business card (CyberCon 2026, missed Friday)","tags":"[\"marshall\",\"ics\",\"professor\",\"faculty-fellow\",\"computer-science\",\"cybersecurity\",\"cybercon-2026\",\"higher-ed\"]","notes":"Dr. Charmaine \"Char\" Sample. ICS Faculty Fellow. Pittsburgh native. DSc Cybersecurity from Capitol Technology University (~2013). 40+ years in industry starting 1994 at Trusted Information Systems. SANS Institute instructor. Carnegie Mellon SEI researcher. U.S. Army Research Lab fellow (via ICF). Idaho National Lab Senior Cybersecurity Research Officer (Cybercore). RSA Conference speaker. Signature research: Cyber + Culture — applying Hofstede cultural dimensions to cyberattack attribution and behavior. 11+ publications across SEI, JIW, Springer, IEEE, ECCWS. DOE Women @ Energy honoree. Also teaches at Boise State Online. Business card from CyberCon 2026.","created_at":"2026-03-30T01:42:56.295883","updated_at":"2026-03-30T01:51:45.016980"},
-    {"id":12,"name":"Buddys Bud Co","title":"Cannabis Delivery Service","company":"Buddys Bud Co","email":"","phone":"","phone2":"","website":"buddysbudco.com","address":"","location":"Huntington, WV","source":"promo card (CyberCon 2026 weekend, Huntington)","tags":"[\"cannabis\",\"delivery\",\"retail\",\"edibles\",\"flower\",\"drinks\",\"carts\"]","notes":"Hemp-derived THC retail chain, 5 college-town locations. Founded 2020 by Nicholas Marie. Farm Bill compliant, NOT licensed cannabis. Huntington location: 1531 4th Ave (opened Nov 2024). Products: flower, carts, edibles, THC drinks (Moon Brew). Lounge model. WVDA registered. Trademark: USPTO #97218510. Break-in Jan 2025. Competitor: Cookies/Country Grown 1.5mi away.","created_at":"2026-03-28T02:17:08.275543","updated_at":"2026-03-28T02:20:37.147508"},
-    {"id":11,"name":"Shekinah Apedo, Esq.","title":"Digital Infrastructure Policy","company":"West Virginia Blockchain Foundation","email":"info@wvblockchain.org","phone":"305-546-5193","phone2":"","website":"wvblockchain.org","address":"","location":"Weirton, WV","source":"business card (CyberCon 2026, LaFontaines closing reception)","tags":"[\"blockchain\",\"policy\",\"attorney\",\"digital-infrastructure\",\"wv\",\"cybercon-2026\"]","notes":"Web3 attorney with serious credentials: represented RTFKT (pre-Nike acquisition), GC at Deadfellaz, AML at Bittrex. JD Cooley Law, 10yr social worker before law. Relocated from Miami to Weirton WV deliberately. Runs WVBF (501c3) + Steel Valley Bitcoin LLC. MOU with Hancock County. Drafted support for HCR 4 (Genesis Working Group). Digital Chamber inaugural microgrant. Stand With Crypto WV president. Spoke at NYU, DC Startup Week, DCENTRAL Tokyo, NFTNYC, Art Basel. Single-founder org — she IS the foundation.","created_at":"2026-03-28T00:25:21.018573","updated_at":"2026-03-28T00:31:13.186265"},
-    {"id":10,"name":"Alexander Lambert","title":"Research Engineer","company":"Marshall University — Institute for Cyber Security","email":"lambert232@marshall.edu","phone":"304-654-7881","phone2":"","website":"marshall.edu/cyber","address":"","location":"Huntington, WV","source":"business card (CyberCon 2026, LaFontaines closing reception)","tags":"[\"marshall\",\"ics\",\"research\",\"engineer\",\"cybersecurity\",\"cybercon-2026\"]","notes":"Research Engineer at Marshall ICS. Early-career, likely recent Marshall grad. Participated in NATO Locked Shields 2024 (blue team). No public-facing profile — operational lab role building cyber ranges, supporting OT/ICS research, drone forensics. ICS is a $45M facility (completion Aug 2027), designated National Center of Excellence for Cyber Security in Critical Infrastructure, backed by US Cyber Command/JFHQ-DODIN.","created_at":"2026-03-27T23:48:03.132884","updated_at":"2026-03-28T00:26:09.008709"},
-    {"id":9,"name":"Laken Sheets","title":"Partnership & Engagement Lead","company":"Marshall University — Institute for Cyber Security","email":"Sheets6@marshall.edu","phone":"304-696-4819","phone2":"","website":"marshall.edu/cyber","address":"","location":"Huntington, WV","source":"business card (CyberCon 2026, LaFontaines closing reception)","tags":"[\"marshall\",\"ics\",\"partnerships\",\"engagement\",\"cybersecurity\",\"cybercon-2026\",\"key-contact\",\"higher-ed\"]","notes":"Partnership & Engagement Lead at Marshall ICS. Office: Arthur Weisberg Applied Engineering Complex, Room 1209. This is the person who brokers industry partnerships for Marshall ICS — gatekeeper for Circadence, Secure Ideas, and any other vendor trying to work with the institute.","created_at":"2026-03-27T23:00:35.075415","updated_at":"2026-03-27T23:00:35.075415"},
-    {"id":8,"name":"David Young","title":"Senior Security Consultant","company":"Secure Ideas","email":"david.young@secureideas.com","phone":"866-604-2837","phone2":"614-504-4133 ext 711","website":"www.secureideas.com","address":"","location":"","source":"business card (CyberCon 2026, LaFontaines closing reception)","tags":"[\"cybersecurity\",\"pentesting\",\"security-consultant\",\"cybercon-2026\"]","notes":"Army veteran (Desert Shield/Storm). 27yr IT, 16yr cybersecurity. Healthcare/gov/utilities/consulting background. Secure Ideas also had Zach Tackett presenting at CyberCon on pentest reporting. Firm is CREST accredited, CMMC L1, WOSB. CEO Kevin Tackett is SANS author and IANS faculty.","created_at":"2026-03-27T21:33:03.085897","updated_at":"2026-03-27T21:39:34.423804"},
-    {"id":7,"name":"Harry Wingo","title":"SVP, Strategic Initiatives","company":"Circadence","email":"hwingo@circadence.com","phone":"+1 (202) 360-9966","phone2":"","website":"www.circadence.com","address":"","location":"","source":"business card (Discord, crackedcoco)","tags":"[\"prospect\",\"svp\",\"cybersecurity\",\"keynote-speaker\",\"cybercon-2026\",\"navy-seal\",\"yale\",\"ex-federal\",\"high-value-contact\"]","notes":"Business card from CyberCon 2026 (Marshall University, Mar 25-27). Closing keynote speaker. Former Navy SEAL, Yale JD, ex-Deputy National Cyber Director (Biden admin), NDU faculty 7yrs. At Circadence as SVP Strategic Initiatives — federal/university BD for cyber range platforms. Potential Marshall ICS partnership play.","created_at":"2026-03-27T20:54:32.798373","updated_at":"2026-03-27T21:20:35.637436"},
-    {"id":6,"name":"Mafew Van de Maxville","title":"Artist","company":"","email":"mafewmusic@gmail.com","phone":"","phone2":"","website":"mafewvandemaxville.bandcamp.com","address":"","location":"Charleston, WV","source":"audit request","tags":"[\"music\",\"artist\",\"charleston\"]","notes":"DIY bedroom artist, 16 years. 9 albums. 153 Spotify listeners. Zero press/live shows.","created_at":"2026-03-27T02:07:05.303316","updated_at":"2026-03-27T02:07:05.303316"},
-    {"id":5,"name":"Megan Archer","title":"President & CEO","company":"Huntington Regional Chamber of Commerce","email":"megan@huntingtonchamber.org","phone":"(304) 525-5131","phone2":"(304) 917-6706","website":"huntingtonchamber.org","address":"1108 3rd Ave, Ste 300, Huntington, WV 25701","location":"Huntington, WV","source":"roundtable email","tags":"[\"chamber\",\"key contact\",\"huntington\"]","notes":"Organized the Small Business Roundtable. Key networking contact.","created_at":"2026-03-27T02:07:05.302874","updated_at":"2026-03-27T02:07:05.302874"},
-    {"id":4,"name":"Derek Chapman","title":"SVP of Sales","company":"iHeartMedia","email":"","phone":"","phone2":"","website":"","address":"134 4th Ave, Huntington, WV 25701","location":"Huntington, WV","source":"roundtable research","tags":"[\"media\",\"radio\",\"networking\",\"huntington\"]","notes":"26+ years. Marshall grad. 6 stations. Controls ad relationships for entire Huntington DMA.","created_at":"2026-03-27T02:07:05.301921","updated_at":"2026-03-27T02:07:05.301921"},
-    {"id":3,"name":"Kimberly Greene","title":"Owner","company":"Greene Travel Getaways","email":"","phone":"","phone2":"","website":"","address":"419 11th St, Huntington, WV 25701","location":"Huntington, WV","source":"roundtable research","tags":"[\"travel\",\"prospect\",\"huntington\"]","notes":"15+ years. Luxury travel expert. 48 states. Competitor Travel Doctors TERMINATED March 23 2026.","created_at":"2026-03-27T02:07:05.300613","updated_at":"2026-03-27T02:07:05.300613"},
-    {"id":2,"name":"Joe Justice","title":"Founder","company":"Joe Justice Media","email":"joe@joejusticemedia.com","phone":"(304) 853-5522","phone2":"","website":"joejusticemedia.com","address":"600 Westmoreland Office Park, Ste 102, Dunbar, WV 25064","location":"Charleston, WV","source":"roundtable research","tags":"[\"video\",\"prospect\",\"charleston\",\"content\"]","notes":"Former Advantage Technology Marketing Dir (Inc 5000). 286 podcast episodes. BNI + Alliance member.","created_at":"2026-03-27T02:07:05.299455","updated_at":"2026-03-27T02:07:05.299455"},
-    {"id":1,"name":"Nick Campbell","title":"Realtor","company":"Better Homes and Gardens Real Estate Central","email":"NickCampbellRealtor@gmail.com","phone":"(304) 590-3002","phone2":"","website":"nickcampbellrealtor.com","address":"5 Summers St, Charleston, WV 25301","location":"Charleston, WV","source":"roundtable research","tags":"[\"realtor\",\"prospect\",\"charleston\"]","notes":"96 sales. Social media savvy (TikTok). Grit Daily #6 WV agent 2025. Mid-tier volume, strong digital.","created_at":"2026-03-27T02:07:05.293656","updated_at":"2026-03-27T02:07:05.293656"}
-  ],
-  "audits": [
-    {"id":26,"contact_id":33,"company":"Advantage Valley","audit_type":"digital_presence","google_rating":0.0,"google_reviews":0,"summary":"Health: 35/100. Tech: wordpress. Google: 0.0 (0 reviews)","created_at":"2026-04-03T19:45:17.975219"},
-    {"id":25,"contact_id":32,"company":"Grass Busters Lawn Care & Landscaping","audit_type":"digital_presence","google_rating":4.8,"google_reviews":193,"summary":"Health: 45/100. Tech: unknown. Google: 4.8 (193 reviews)","created_at":"2026-04-03T18:55:36.324377"},
-    {"id":24,"contact_id":31,"company":"Synergy HomeCare of Barboursville / Proctorville","audit_type":"digital_presence","google_rating":5.0,"google_reviews":16,"summary":"Health: 64/100. Tech: wordpress. Google: 5.0 (16 reviews)","created_at":"2026-04-03T15:45:38.310947"},
-    {"id":23,"contact_id":30,"company":"The 3:0 Initiative","audit_type":"digital_presence","google_rating":0.0,"google_reviews":0,"summary":"Health: 10/100. Tech: unknown. Google: 0.0 (0 reviews)","created_at":"2026-04-03T14:12:39.111225"},
-    {"id":22,"contact_id":29,"company":"Skaggs Electrical Repairs & Home Inspections","audit_type":"digital_presence","google_rating":0.0,"google_reviews":0,"summary":"Health: 35/100. Tech: custom. Google: 0.0 (0 reviews)","created_at":"2026-04-02T18:04:32.635710"},
-    {"id":21,"contact_id":27,"company":"Diversified Technology","audit_type":"digital_presence","google_rating":0.0,"google_reviews":0,"summary":"Health: 35/100. Tech: custom. Google: 0.0 (0 reviews)","created_at":"2026-04-02T14:56:21.802536"},
-    {"id":20,"contact_id":26,"company":"WSAZ-3","audit_type":"digital_presence","google_rating":4.2,"google_reviews":83,"summary":"Health: 64/100. Tech: custom. Google: 4.2 (83 reviews)","created_at":"2026-04-02T14:32:21.678161"},
-    {"id":19,"contact_id":19,"company":"Hartford Funds","audit_type":"digital_presence","google_rating":0.0,"google_reviews":0,"summary":"Health: 35/100. Tech: custom. Google: 0.0 (0 reviews)","created_at":"2026-04-01T21:27:34.066371"},
-    {"id":18,"contact_id":18,"company":"Wilcat Associates","audit_type":"digital_presence","google_rating":0.0,"google_reviews":0,"summary":"Health: 35/100. Tech: wix. Google: 0.0 (0 reviews)","created_at":"2026-04-01T21:10:09.329931"},
-    {"id":17,"contact_id":17,"company":"Guidon Creative","audit_type":"digital_presence","google_rating":0.0,"google_reviews":0,"summary":"Health: 35/100. Tech: wordpress. Google: 0.0 (0 reviews)","created_at":"2026-04-01T19:38:05.015148"},
-    {"id":16,"contact_id":16,"company":"Appalachian Expeditions","audit_type":"digital_presence","google_rating":5.0,"google_reviews":3,"summary":"Health: 49/100. Tech: unknown. Google: 5.0 (3 reviews)","created_at":"2026-04-01T16:32:54.426458"},
-    {"id":15,"contact_id":15,"company":"Concord University","audit_type":"digital_presence","google_rating":4.5,"google_reviews":54,"summary":"Health: 67/100. Tech: wordpress. Google: 4.5 (54 reviews)","created_at":"2026-04-01T14:24:50.088398"},
-    {"id":14,"contact_id":14,"company":"Marshall University","audit_type":"digital_presence","google_rating":4.5,"google_reviews":354,"summary":"Health: 70/100. Tech: custom. Google: 4.5 (354 reviews)","created_at":"2026-03-30T01:43:06.878341"},
-    {"id":12,"contact_id":12,"company":"Buddys Bud Co","audit_type":"swot","google_rating":null,"google_reviews":null,"summary":"Hemp-derived THC retail chain, 5 locations in college towns (PA/WV/OH/KY). Founded 2020 by Nicholas Marie. Farm Bill compliant, NOT licensed cannabis. Lounge model, in-house edibles, delivery. 4.7-5.0 reviews. Huntington location opened Nov 2024. Wix site, modest social (~1,780 IG). Federal/state regulatory risk is existential.","created_at":"2026-03-28T02:20:37.145486"},
-    {"id":11,"contact_id":12,"company":"Buddys Bud Co","audit_type":"digital_presence","google_rating":null,"google_reviews":null,"summary":"Digital Health Score: 35/100. Web presence score: 45/100","created_at":"2026-03-28T02:17:09.165612"},
-    {"id":10,"contact_id":11,"company":"West Virginia Blockchain Foundation","audit_type":"swot","google_rating":null,"google_reviews":null,"summary":"501(c)(3) nonprofit, essentially one-person org led by Shekinah Apedo. Web3 attorney with high-profile credentials (RTFKT/Nike, Deadfellaz, Bittrex AML). Relocated from Miami to Weirton WV. Runs dual structure: WVBF nonprofit + Steel Valley Bitcoin LLC. MOU with Hancock County. Drafted support for HCR 4. Digital Chamber inaugural microgrant recipient. Stand With Crypto WV president.","created_at":"2026-03-28T00:31:13.183629"},
-    {"id":9,"contact_id":11,"company":"West Virginia Blockchain Foundation","audit_type":"digital_presence","google_rating":null,"google_reviews":null,"summary":"Digital Health Score: 35/100. Web presence score: 45/100","created_at":"2026-03-28T00:25:21.805231"},
-    {"id":8,"contact_id":8,"company":"Secure Ideas","audit_type":"swot","google_rating":null,"google_reviews":null,"summary":"Boutique pentest firm, ~30 staff, $2-3M rev. CREST accredited, CMMC L1. Founded by SANS author Kevin Tackett. Senior-only model, NPS 85. Zach Tackett spoke at CyberCon 2026. David Young is Army vet, 27yr IT. Strong technical cred, weak digital presence.","created_at":"2026-03-27T21:39:34.420619"},
-    {"id":7,"contact_id":8,"company":"Secure Ideas","audit_type":"digital_presence","google_rating":null,"google_reviews":null,"summary":"Digital Health Score: 35/100. Web presence score: 45/100","created_at":"2026-03-27T21:33:03.090131"},
-    {"id":6,"contact_id":7,"company":"Circadence","audit_type":"digital_presence","google_rating":null,"google_reviews":null,"summary":"Digital Health Score: 35/100. Web presence score: 48/100","created_at":"2026-03-27T20:54:32.800822"},
-    {"id":5,"contact_id":null,"company":"Chemours Company","audit_type":"swot","google_rating":1.2,"google_reviews":118,"summary":"$5.8B revenue. 1.2 Google rating. $4B+ PFAS liability. WV: 500 employees, $70M payroll.","created_at":"2026-03-27T02:07:05.304403"},
-    {"id":4,"contact_id":6,"company":"Mafew Van de Maxville","audit_type":"swot","google_rating":null,"google_reviews":null,"summary":"Prolific output, zero marketing. 153 Spotify listeners. Talent there, visibility not.","created_at":"2026-03-27T02:07:05.303884"},
-    {"id":3,"contact_id":3,"company":"Greene Travel Getaways","audit_type":"swot","google_rating":5.0,"google_reviews":1,"summary":"1 review in 15 years. No website. Facebook only. Competitor just closed = market opening.","created_at":"2026-03-27T02:07:05.301087"},
-    {"id":2,"contact_id":2,"company":"Joe Justice Media","audit_type":"swot","google_rating":5.0,"google_reviews":14,"summary":"Perfect rating, small base. Strong networking. Legal video niche. Content Club scalable product.","created_at":"2026-03-27T02:07:05.300068"},
-    {"id":1,"contact_id":1,"company":"Nick Campbell BHGRE","audit_type":"swot","google_rating":4.8,"google_reviews":259,"summary":"Strong digital brand. Opportunity: Charleston relocation specialist.","created_at":"2026-03-27T02:07:05.298335"}
-  ],
-  "research": [
-    {"id":9,"contact_id":28,"subject":"Tia Fix Rumbaugh","research_type":"full_profile","findings":"Huntington City Council D3 (2020-present). Running for Cabell County Commission 2026. NYU 2000 (Speech/Mass Comm). ESL teacher in Asia post-college. Founded So Social LLC (Montessori) and Forest Adventure Co-Op (24-acre outdoor childcare). AI data annotation freelance work. Standup comedian. Proposed Marshall think tank and Coalfield Development collabs from council seat. Ceredo native. WOWK \"Women Who Run Huntington\" featured. Herald-Dispatch profiled.","sources":"[\"herald-dispatch.com\",\"downtownhuntington.net\",\"mountainstatespotlight.org\",\"wowktv.com\",\"wvgazettemail.com\"]","created_at":"2026-04-02T15:28:41.516174"},
-    {"id":8,"contact_id":14,"subject":"Char Sample / Marshall ICS","research_type":"full_profile","findings":"Dr. Charmaine \"Char\" Sample. DSc Cybersecurity, Capitol Technology University (~2013). BS CS University of Pittsburgh. 40+ years in cybersecurity starting at Trusted Information Systems (1994). Career: SANS instructor → Carnegie Mellon SEI (2013-2015) → U.S. Army Research Lab via ICF → Idaho National Lab Cybercore (Senior Cybersecurity Research Officer, 2019) → Boise State Online → Marshall University (Assistant Prof CECS + ICS Faculty Fellow). Signature research: applying Hofstede cultural dimensions to predict/explain/attribute cyberattack behaviors. 11+ publications. RSA Conference speaker. DOE Women @ Energy honoree.","sources":"[\"marshall.edu/cecs\",\"linkedin.com/in/drsample\",\"energy.gov/women-energy\",\"rsaconference.com/experts/char-sample\",\"sei.cmu.edu\",\"boisestate.edu\",\"jinfowar.com\"]","created_at":"2026-03-30T01:51:45.017523"},
-    {"id":7,"contact_id":12,"subject":"Buddys Bud Co","research_type":"full_profile","findings":"Hemp-derived THC retail chain founded 2020 by Nicholas Marie after visiting hemp shop near Rice U in Houston. 5 college-town locations: Indiana PA (IUP), Athens OH (Ohio U), Morgantown WV (WVU, 444 High St), Huntington WV (Marshall, 1531 4th Ave, opened Nov 2024), Lexington KY (UK). Farm Bill compliant, WVDA registered — NOT a licensed cannabis dispensary. Products: THCA flower from PA farms, in-house edibles by J&W culinary grad, Moon Brew THC beverages, 96% purity carts, moon rock joints. First lounge model in PA/WV/OH. No nicotine/kratom. ~1hr local delivery. Trademark: USPTO #97218510. Huntington break-in Jan 2 2025. Reviews: 4.7-5.0.","sources":"[\"buddysbudco.com\",\"morgantownmag.com\",\"justia.com (trademark)\",\"wsaz.com\",\"bestdispensaries.munchmakers.com\",\"instagram.com/buddysbudcowvu\"]","created_at":"2026-03-28T02:20:37.146605"},
-    {"id":6,"contact_id":11,"subject":"Shekinah Apedo / WV Blockchain Foundation","research_type":"full_profile","findings":"Miami-born attorney, pivoted from social work (10yr) to human rights law (Cooley JD, Danish Institute externship) to Web3 law (RTFKT/Nike, Deadfellaz GC, Bittrex AML). Deliberately relocated to Weirton WV to build blockchain economic development ecosystem. Runs WVBF (501c3) + Steel Valley Bitcoin LLC. MOU with Hancock County Commission. Claims drafting support on HCR 4 (Genesis Working Group for AI/HPC/digital infrastructure). Digital Chamber inaugural microgrant. Stand With Crypto WV president. Spoke at NYS Bar/NYU, DC Startup Week, DCENTRAL Tokyo, NFTNYC, Art Basel.","sources":"[\"linkedin.com/in/apedo\",\"wvblockchain.org\",\"steelvalleybitcoin.org\",\"cooley.edu\",\"theintelligencer.net\",\"weirtondailytimes.com\",\"cointelegraph.com\",\"standwithcrypto.org\",\"legiscan.com/WV/bill/HCR4/2026\"]","created_at":"2026-03-28T00:31:13.185534"},
-    {"id":5,"contact_id":10,"subject":"Alexander Lambert / Marshall ICS","research_type":"full_profile","findings":"Early-career Research Engineer at Marshall ICS. Participated in NATO Locked Shields 2024 (blue team, US team at WVU under JFHQ-DODIN). Likely recent Marshall grad transitioned to staff. No publications, no LinkedIn, no conference talks — operational/behind-the-scenes role. Builds and maintains cyber range environments, supports applied research in OT/ICS security, drone forensics, incident response. ICS context: $45M building under construction (completion Aug 2027), 78K sqft, 13 labs. Designated National Center of Excellence for Cyber Security in Critical Infrastructure.","sources":"[\"marshall.edu/cyber/team\",\"marshall.edu/news (Locked Shields 2024)\",\"marshall.edu/cyber/about\",\"marshall.edu/cyber/facilities\",\"marshall.edu/cyber/research\",\"wvmetronews.com\",\"dvidshub.net\"]","created_at":"2026-03-28T00:26:09.005841"},
-    {"id":4,"contact_id":8,"subject":"Secure Ideas / David Young","research_type":"full_profile","findings":"Boutique pentest firm est. 2010, Jacksonville FL. CEO Kevin Tackett is SANS course author (SEC542, SEC642, SEC571), IANS faculty, DEF CON/Black Hat speaker. CREST accredited and CMMC L1 (both Apr 2025). ~30 staff, $2-3M rev. PETaaS subscription model launched 2023. Zach Tackett presented at CyberCon 2026 on pentest reporting. David Young: 27yr IT, 16yr cybersecurity, Army vet (Desert Shield/Storm), healthcare/gov/utilities background. WOSB designation. NPS 85 (self-reported).","sources":"[\"secureideas.com\",\"prnewswire.com\",\"businesswire.com\",\"crunchbase.com\",\"linkedin.com\",\"iansresearch.com\",\"marshall.edu/cyber/cybercon\"]","created_at":"2026-03-27T21:39:34.422783"},
-    {"id":3,"contact_id":7,"subject":"Harry Wingo / Circadence","research_type":"profile","findings":"Former Navy SEAL (6+ yrs), Yale Law JD, FCC Special Counsel, Google DC Senior Policy Counsel, NDU cyber faculty (7 yrs), Deputy National Cyber Director (ONCD, Biden admin Jul 2024-Jan 2025). Now SVP Strategic Initiatives at Circadence Corp (Boulder, CO) — builds federal/university partnerships for Project Ares cyber range platform. Circadence is Tier-1 DoD PCTE vendor. No documented Marshall partnership yet — likely early-stage BD targeting Marshall ICS (broke ground 2024). Closing keynote at CyberCon 2026.","sources":"[\"linkedin\",\"hstoday.us\",\"therecord.media\",\"executivegov.com\",\"afcea.org\",\"federalnewsnetwork.com\",\"marshall.edu/cyber\"]","created_at":"2026-03-27T21:20:35.638072"},
-    {"id":2,"contact_id":4,"subject":"Derek Chapman iHeartMedia","research_type":"full_profile","findings":"SVP Sales Oct 2024. Career: Director Marketing → Sales Mgr → SVP. Instagram @derekchappy 981 followers. Side projects: @archer.video.","sources":"[]","created_at":"2026-03-27T02:07:05.302402"},
-    {"id":1,"contact_id":1,"subject":"Nick Campbell Realtor","research_type":"full_profile","findings":"TikTok active. IG 1,039 followers. FB 2,123 likes. Website is template (MoxiWorks). Not on FastExpert/Expertise.com rankings.","sources":"[]","created_at":"2026-03-27T02:07:05.298923"}
-  ],
-  "interactions": [
-    {"id":41,"contact_id":33,"interaction_type":"audit","summary":"digital_presence audit — Health: 35/100. Tech: wordpress. Google: 0.0 (0 reviews)","details":"Audit #26 for Advantage Valley. Type: digital_presence.","created_at":"2026-04-03T19:45:17.975219"},
-    {"id":40,"contact_id":32,"interaction_type":"audit","summary":"digital_presence audit — Health: 45/100. Tech: unknown. Google: 4.8 (193 reviews)","details":"Audit #25 for Grass Busters Lawn Care & Landscaping. Type: digital_presence.","created_at":"2026-04-03T18:55:36.324377"},
-    {"id":39,"contact_id":31,"interaction_type":"audit","summary":"digital_presence audit — Health: 64/100. Tech: wordpress. Google: 5.0 (16 reviews)","details":"Audit #24 for Synergy HomeCare of Barboursville / Proctorville. Type: digital_presence.","created_at":"2026-04-03T15:45:38.310947"},
-    {"id":38,"contact_id":31,"interaction_type":"meeting","summary":"Met at Community Leaders Breakfast, Barboursville, WV","details":"Business card scanned. Source: business card (Community Leaders Breakfast, Christ Temple Church).","created_at":"2026-04-03T15:45:29.604030"},
-    {"id":37,"contact_id":30,"interaction_type":"audit","summary":"digital_presence audit — Health: 10/100. Tech: unknown. Google: 0.0 (0 reviews)","details":"Audit #23 for The 3:0 Initiative. Type: digital_presence.","created_at":"2026-04-03T14:12:39.111225"},
-    {"id":36,"contact_id":30,"interaction_type":"meeting","summary":"Met at Community Leaders Breakfast, Huntington, WV","details":"Business card scanned. Source: business card (Community Leaders Breakfast, Christ Temple Church).","created_at":"2026-04-03T14:12:25.105981"},
-    {"id":35,"contact_id":29,"interaction_type":"audit","summary":"digital_presence audit — Health: 35/100. Tech: custom. Google: 0.0 (0 reviews)","details":"Audit #22 for Skaggs Electrical Repairs & Home Inspections. Type: digital_presence.","created_at":"2026-04-02T18:04:32.635710"},
-    {"id":34,"contact_id":27,"interaction_type":"audit","summary":"digital_presence audit — Health: 35/100. Tech: custom. Google: 0.0 (0 reviews)","details":"Audit #21 for Diversified Technology. Type: digital_presence.","created_at":"2026-04-02T14:56:21.802536"},
-    {"id":33,"contact_id":26,"interaction_type":"audit","summary":"digital_presence audit — Health: 64/100. Tech: custom. Google: 4.2 (83 reviews)","details":"Audit #20 for WSAZ-3. Type: digital_presence.","created_at":"2026-04-02T14:32:21.678161"},
-    {"id":32,"contact_id":25,"interaction_type":"conference","summary":"Attended Focus Forward 2026, WVU Morgantown, April 1 — Brandon co-moderated the workforce panel","details":"Brandon co-moderated \"The Modern Workforce. Then What?\" panel at 9:50am. Shared community development interests via Highlawn Accelerate and Coalfield Development.","created_at":"2026-04-02T13:40:02.181311"},
-    {"id":31,"contact_id":24,"interaction_type":"conference","summary":"Met at Focus Forward 2026, WVU Morgantown, April 1","details":"LinkedIn QR code exchanged at conference. Profile not yet fully identified.","created_at":"2026-04-02T13:38:20.661484"},
-    {"id":30,"contact_id":23,"interaction_type":"conference","summary":"Met at Focus Forward 2026, WVU Morgantown, April 1","details":"LinkedIn screenshot exchanged at conference.","created_at":"2026-04-02T13:38:20.660089"},
-    {"id":29,"contact_id":22,"interaction_type":"conference","summary":"Met at Focus Forward 2026, WVU Morgantown, April 1","details":"LinkedIn screenshot exchanged at conference.","created_at":"2026-04-02T13:38:20.658574"},
-    {"id":28,"contact_id":21,"interaction_type":"conference","summary":"Met at Focus Forward 2026, WVU Morgantown, April 1","details":"Attendee at Focus Forward: Minds and Machines conference.","created_at":"2026-04-02T13:38:20.657141"},
-    {"id":27,"contact_id":20,"interaction_type":"conference","summary":"Met at Focus Forward 2026, WVU Morgantown, April 1","details":"Attendee at Focus Forward: Minds and Machines conference.","created_at":"2026-04-02T13:38:20.655133"},
-    {"id":26,"contact_id":19,"interaction_type":"audit","summary":"digital_presence audit — Health: 35/100. Tech: custom. Google: 0.0 (0 reviews)","details":"Audit #19 for Hartford Funds. Type: digital_presence.","created_at":"2026-04-01T21:27:34.066371"},
-    {"id":25,"contact_id":19,"interaction_type":"meeting","summary":"Met at Focus Forward 2026, West Virginia","details":"Business card scanned. Source: business card (Focus Forward 2026, WVU).","created_at":"2026-04-01T21:27:24.245333"},
-    {"id":24,"contact_id":18,"interaction_type":"audit","summary":"digital_presence audit — Health: 35/100. Tech: wix. Google: 0.0 (0 reviews)","details":"Audit #18 for Wilcat Associates. Type: digital_presence.","created_at":"2026-04-01T21:10:09.329931"},
-    {"id":23,"contact_id":18,"interaction_type":"meeting","summary":"Met at Focus Forward 2026, Morgantown, WV","details":"Business card scanned. Source: business card (Focus Forward 2026, WVU).","created_at":"2026-04-01T21:09:55.471797"},
-    {"id":22,"contact_id":17,"interaction_type":"audit","summary":"digital_presence audit — Health: 35/100. Tech: wordpress. Google: 0.0 (0 reviews)","details":"Audit #17 for Guidon Creative. Type: digital_presence.","created_at":"2026-04-01T19:38:05.015148"},
-    {"id":21,"contact_id":17,"interaction_type":"meeting","summary":"Met at Focus Forward 2026, Summersville, WV","details":"Business card scanned. Source: business card (Focus Forward 2026, WVU).","created_at":"2026-04-01T19:37:53.434224"},
-    {"id":20,"contact_id":16,"interaction_type":"audit","summary":"digital_presence audit — Health: 49/100. Tech: unknown. Google: 5.0 (3 reviews)","details":"Audit #16 for Appalachian Expeditions. Type: digital_presence.","created_at":"2026-04-01T16:32:54.426458"},
-    {"id":19,"contact_id":16,"interaction_type":"meeting","summary":"Met at Focus Forward 2026, Davis, West Virginia","details":"Business card scanned. Source: business card (Focus Forward 2026, WVU).","created_at":"2026-04-01T16:32:46.070228"},
-    {"id":18,"contact_id":15,"interaction_type":"audit","summary":"digital_presence audit — Health: 67/100. Tech: wordpress. Google: 4.5 (54 reviews)","details":"Audit #15 for Concord University. Type: digital_presence.","created_at":"2026-04-01T14:24:50.088398"},
-    {"id":17,"contact_id":15,"interaction_type":"meeting","summary":"Met at Focus Forward 2026, Athens, WV","details":"Business card scanned. Source: business card (Focus Forward 2026, WVU).","created_at":"2026-04-01T14:24:28.105234"},
-    {"id":16,"contact_id":14,"interaction_type":"audit","summary":"digital_presence audit — Health: 70/100. Tech: custom. Google: 4.5 (354 reviews)","details":"Audit #14 for Marshall University. Type: digital_presence.","created_at":"2026-03-30T01:43:06.878341"},
-    {"id":15,"contact_id":14,"interaction_type":"conference","summary":"Met at CyberCon 2026, Huntington, WV","details":"Business card scanned. Source: business card (CyberCon 2026, missed Friday).","created_at":"2026-03-30T01:42:56.297012"},
-    {"id":12,"contact_id":12,"interaction_type":"other","summary":"Picked up promo card during CyberCon 2026 weekend in Huntington","details":"Promotional card for cannabis delivery service. No direct personal contact — card collected during CyberCon 2026 weekend, March 27-28.","created_at":"2026-03-29T23:48:53.956836"},
-    {"id":11,"contact_id":6,"interaction_type":"meeting","summary":"Met in person, Wednesday March 25","details":"In-person meeting. Source: audit request.","created_at":"2026-03-29T23:48:53.955861"},
-    {"id":10,"contact_id":5,"interaction_type":"email","summary":"Connected via Small Business Roundtable email, March 17","details":"Megan forwarded Small Business Roundtable breakout discussions email on March 17. She is President & CEO of the Huntington Regional Chamber.","created_at":"2026-03-29T23:48:53.955038"},
-    {"id":9,"contact_id":4,"interaction_type":"research","summary":"Identified via Small Business Roundtable research, ~March 17","details":"Found through Chamber Small Business Roundtable breakout discussions.","created_at":"2026-03-29T23:48:53.954016"},
-    {"id":8,"contact_id":3,"interaction_type":"research","summary":"Identified via Small Business Roundtable research, ~March 17","details":"Found through Chamber Small Business Roundtable breakout discussions.","created_at":"2026-03-29T23:48:53.952999"},
-    {"id":7,"contact_id":2,"interaction_type":"research","summary":"Identified via Small Business Roundtable research, ~March 17","details":"Found through Chamber Small Business Roundtable breakout discussions forwarded by Megan Archer on March 17.","created_at":"2026-03-29T23:48:53.952009"},
-    {"id":6,"contact_id":1,"interaction_type":"meeting","summary":"Met in person, Wednesday March 25","details":"In-person meeting. Source: roundtable research contact.","created_at":"2026-03-29T23:48:53.950727"},
-    {"id":5,"contact_id":11,"interaction_type":"conference","summary":"Met at Marshall CyberCon 2026 closing reception, LaFontaines Rooftop Lounge","details":"Business card exchanged at CyberCon 2026 closing celebration. Attorney working on digital infrastructure policy for the WV Blockchain Foundation.","created_at":"2026-03-28T00:25:21.019686"},
-    {"id":4,"contact_id":10,"interaction_type":"conference","summary":"Met at Marshall CyberCon 2026 closing reception, LaFontaines Rooftop Lounge","details":"Business card exchanged at CyberCon 2026 closing celebration. Research Engineer at ICS — the technical counterpart to Laken Sheets on the partnerships side.","created_at":"2026-03-27T23:48:03.133947"},
-    {"id":3,"contact_id":9,"interaction_type":"conference","summary":"Met at Marshall CyberCon 2026 closing reception, LaFontaines Rooftop Lounge","details":"Business card exchanged at CyberCon 2026 closing celebration, LaFontaines Rooftop Lounge. Laken is the partnership/engagement lead for the ICS — the person who brokers industry deals for the institute.","created_at":"2026-03-27T23:00:35.076526"},
-    {"id":2,"contact_id":8,"interaction_type":"conference","summary":"Met at Marshall CyberCon 2026 closing reception, LaFontaines Rooftop Lounge","details":"Business card exchanged at CyberCon 2026 closing celebration, LaFontaines Rooftop Lounge.","created_at":"2026-03-27T21:33:03.091352"},
-    {"id":1,"contact_id":7,"interaction_type":"conference","summary":"Met at Marshall CyberCon 2026 closing reception, LaFontaines Rooftop Lounge","details":"Business card exchanged at CyberCon 2026 closing celebration. Harry was closing keynote speaker. Conference theme: Mission Ready in a Converged World.","created_at":"2026-03-27T21:20:35.638875"}
-  ]
-};
+let CRM_DATA = null;
+
+async function loadData() {
+  // Show loading overlay without destroying the tab panel DOM
+  const overlay = document.createElement('div');
+  overlay.id = 'loading-overlay';
+  overlay.style.cssText = 'position:fixed;inset:0;display:flex;align-items:center;justify-content:center;' +
+    'background:rgba(255,255,255,0.85);z-index:200;font-size:15px;color:#64748b;';
+  overlay.textContent = 'Loading CRM data\u2026';
+  document.body.appendChild(overlay);
+
+  try {
+    const resp = await fetch('data.json?' + Date.now()); // cache-bust
+    if (!resp.ok) throw new Error('HTTP ' + resp.status);
+    CRM_DATA = await resp.json();
+  } catch (e) {
+    console.error('Failed to load data.json:', e);
+    overlay.innerHTML =
+      '<div style="text-align:center;">' +
+      '<div style="font-size:16px;font-weight:600;color:#1a202c;margin-bottom:8px;">Failed to load CRM data</div>' +
+      '<div>Run <code style="background:#f1f5f9;padding:2px 6px;border-radius:4px;">scripts/export_data.py</code> first.</div>' +
+      '</div>';
+    return;
+  }
+
+  // Remove loading overlay
+  overlay.remove();
+
+  // Build lookup maps then boot the UI
+  buildLookupMaps();
+  populateStatsBar();
+  init();
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// STATS BAR — populate header counts from loaded data
+// ─────────────────────────────────────────────────────────────────────────────
+function populateStatsBar() {
+  const s = CRM_DATA.stats || {};
+  const set = (id, val) => {
+    const el = document.getElementById(id);
+    if (el) el.textContent = val != null ? val : '—';
+  };
+  // Header stats bar
+  set('stat-bar-contacts',     s.contacts);
+  set('stat-bar-audits',       s.audits);
+  set('stat-bar-research',     s.research);
+  set('stat-bar-interactions', s.interactions);
+  set('stat-bar-locations',    Array.isArray(s.locations) ? s.locations.length : (s.locations ?? '—'));
+  // Dashboard tab stat cards
+  set('dash-stat-contacts',    s.contacts);
+  set('dash-stat-audits',      s.audits);
+  set('dash-stat-research',    s.research);
+  set('dash-stat-interactions', s.interactions);
+
+  if (CRM_DATA.generated_at) {
+    const el = document.getElementById('data-generated-at');
+    if (el) {
+      const d = new Date(CRM_DATA.generated_at);
+      const fmt = d.toLocaleString('en-US', {
+        month: 'short', day: 'numeric', year: 'numeric',
+        hour: 'numeric', minute: '2-digit'
+      });
+      el.textContent = 'Data as of: ' + fmt;
+      el.style.display = '';
+    }
+  }
+}
+
+// All rendering functions are only called after loadData() resolves,
+// so CRM_DATA is guaranteed to be populated before any access.
+// NOTE: The old inline data block has been removed — data now comes from data.json.
+
 
 // ─────────────────────────────────────────────────────────────────────────────
 // HELPERS
@@ -1046,27 +986,55 @@ function getContactById(id) {
   return CRM_DATA.contacts.find(c => c.id === id) || null;
 }
 
-// Build lookup maps
-const auditsByContact = {};
-const researchByContact = {};
-const interactionsByContact = {};
+// Lookup maps — populated by buildLookupMaps() after data loads
+let auditsByContact = {};
+let researchByContact = {};
+let interactionsByContact = {};
+let businessNameMap = {};   // business_id → company name
+let auditsByBusiness = {};
 
-CRM_DATA.audits.forEach(a => {
-  if (a.contact_id != null) {
-    if (!auditsByContact[a.contact_id]) auditsByContact[a.contact_id] = [];
-    auditsByContact[a.contact_id].push(a);
-  }
-});
+function buildLookupMaps() {
+  auditsByContact = {};
+  researchByContact = {};
+  interactionsByContact = {};
+  businessNameMap = {};
+  auditsByBusiness = {};
 
-CRM_DATA.research.forEach(r => {
-  if (!researchByContact[r.contact_id]) researchByContact[r.contact_id] = [];
-  researchByContact[r.contact_id].push(r);
-});
+  // Build business_id → company name from contacts
+  CRM_DATA.contacts.forEach(c => {
+    if (c.business_id && c.company) {
+      businessNameMap[c.business_id] = c.company;
+    }
+  });
 
-CRM_DATA.interactions.forEach(i => {
-  if (!interactionsByContact[i.contact_id]) interactionsByContact[i.contact_id] = [];
-  interactionsByContact[i.contact_id].push(i);
-});
+  CRM_DATA.audits.forEach(a => {
+    if (a.contact_id != null) {
+      if (!auditsByContact[a.contact_id]) auditsByContact[a.contact_id] = [];
+      auditsByContact[a.contact_id].push(a);
+    }
+    if (a.business_id != null) {
+      if (!auditsByBusiness[a.business_id]) auditsByBusiness[a.business_id] = [];
+      auditsByBusiness[a.business_id].push(a);
+    }
+  });
+
+  CRM_DATA.research.forEach(r => {
+    const key = r.contact_id || r.business_id;
+    if (key) {
+      if (!researchByContact[key]) researchByContact[key] = [];
+      researchByContact[key].push(r);
+    }
+  });
+
+  CRM_DATA.interactions.forEach(i => {
+    if (!interactionsByContact[i.contact_id]) interactionsByContact[i.contact_id] = [];
+    interactionsByContact[i.contact_id].push(i);
+  });
+}
+
+function getBusinessName(business_id) {
+  return businessNameMap[business_id] || null;
+}
 
 // ─────────────────────────────────────────────────────────────────────────────
 // TAB SWITCHING
@@ -1337,18 +1305,22 @@ function renderAudits() {
 
   el.innerHTML = filtered.map(a => {
     const contactName = a.contact_id ? getContactName(a.contact_id) : null;
+    const companyName = a.company || (a.business_id ? getBusinessName(a.business_id) : null) || '';
     const ratingBadge = a.google_rating != null && a.google_rating > 0
       ? `<span class="badge badge-green">&#9733; ${a.google_rating} (${a.google_reviews})</span>`
       : (a.google_rating === 0 ? `<span class="badge badge-gray">No Google data</span>` : '');
+    const scoreBadge = a.score != null && a.score !== 'None'
+      ? `<span class="badge badge-blue">Score: ${a.score}</span>` : '';
 
     return `
       <div class="audit-card">
         <div class="audit-meta">
-          <div class="audit-company">${esc(a.company)}</div>
+          ${companyName ? `<div class="audit-company">${esc(companyName)}</div>` : ''}
           ${contactName ? `<div style="font-size:12px;color:var(--text-muted);margin-top:2px;">Contact: ${esc(contactName)}</div>` : ''}
-          <div class="audit-summary">${esc(a.summary)}</div>
+          <div class="audit-summary">${esc(a.summary || '')}</div>
           <div style="margin-top:8px;display:flex;gap:6px;flex-wrap:wrap;">
             ${auditTypeBadge(a.audit_type)}
+            ${scoreBadge}
             ${ratingBadge}
           </div>
         </div>
@@ -1364,7 +1336,7 @@ function renderResearch() {
   const query = (document.getElementById('research-search').value || '').toLowerCase();
   let filtered = CRM_DATA.research.filter(r => {
     if (!query) return true;
-    return [r.subject, r.findings, r.research_type].join(' ').toLowerCase().includes(query);
+    return [r.topic, r.subject, r.body, r.findings, r.research_type].join(' ').toLowerCase().includes(query);
   });
   filtered = [...filtered].sort((a,b) => new Date(b.created_at) - new Date(a.created_at));
 
@@ -1377,7 +1349,9 @@ function renderResearch() {
   }
 
   el.innerHTML = filtered.map(r => {
-    const contactName = r.contact_id ? getContactName(r.contact_id) : null;
+    const contactName = r.contact_id ? getContactName(r.contact_id) : (r.business_id ? getBusinessName(r.business_id) : null);
+    const subject = r.topic || r.subject || 'Untitled';
+    const findings = r.body || r.findings || '';
     const sources = parseSources(r.sources);
     const typeBadge = r.research_type === 'full_profile'
       ? `<span class="badge badge-teal">Full Profile</span>`
@@ -1385,18 +1359,18 @@ function renderResearch() {
 
     return `
       <div class="research-card" id="research-${r.id}">
-        <div class="research-header" onclick="toggleResearch(${r.id})">
+        <div class="research-header" onclick="toggleResearch('${r.id}')">
           <div class="research-header-left">
             ${typeBadge}
             <div>
-              <div class="research-subject">${esc(r.subject)}</div>
+              <div class="research-subject">${esc(subject)}</div>
               <div class="research-meta">${contactName ? `${esc(contactName)} &nbsp;&middot;&nbsp; ` : ''}${fmtDate(r.created_at)}</div>
             </div>
           </div>
           <div class="research-chevron">&#9660;</div>
         </div>
         <div class="research-body">
-          <div class="research-findings">${esc(r.findings)}</div>
+          <div class="research-findings">${esc(findings)}</div>
           ${sources.length > 0 ? `
             <div style="margin-top:0.75rem;">
               <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.5px;color:var(--text-muted);margin-bottom:6px;">Sources</div>
@@ -1409,7 +1383,7 @@ function renderResearch() {
 
 function toggleResearch(id) {
   const card = document.getElementById('research-' + id);
-  card.classList.toggle('expanded');
+  if (card) card.classList.toggle('expanded');
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -1444,8 +1418,8 @@ function renderInteractions() {
             </div>
             <span class="timeline-date">${fmtDate(i.created_at)}</span>
           </div>
-          <div class="timeline-summary">${esc(i.summary)}</div>
-          ${i.details && i.details !== i.summary ? `<div style="font-size:12px;color:var(--text-muted);margin-top:4px;">${esc(i.details)}</div>` : ''}
+          <div class="timeline-summary">${esc(i.subject || i.summary || '')}</div>
+          ${(i.body || i.details) && (i.body || i.details) !== (i.subject || i.summary) ? `<div style="font-size:12px;color:var(--text-muted);margin-top:4px;">${esc(i.body || i.details)}</div>` : ''}
         </div>
       </div>`;
   }).join('');
@@ -1469,7 +1443,7 @@ function init() {
   }
 }
 
-document.addEventListener('DOMContentLoaded', init);
+document.addEventListener('DOMContentLoaded', loadData);
 </script>
 </body>
 </html>
