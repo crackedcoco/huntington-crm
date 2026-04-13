@@ -1,0 +1,188 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Description: Huntington CRM - Cognito, API Gateway, Lambda
+
+Parameters:
+  Stage:
+    Type: String
+    Default: dev
+    AllowedValues: [dev, prod]
+  TableName:
+    Type: String
+    Default: jennjim-main-dev
+    Description: Existing DynamoDB table name (single-table design)
+  DashboardDomain:
+    Type: String
+    Default: crm.huntington-analytics.com
+    Description: Dashboard domain for CORS
+
+Resources:
+  # ── Cognito User Pool ──────────────────────────────────────────
+  UserPool:
+    Type: AWS::Cognito::UserPool
+    Properties:
+      UserPoolName: !Sub huntington-crm-${Stage}
+      AutoVerifiedAttributes: [email]
+      UsernameAttributes: [email]
+      MfaConfiguration: 'OFF'
+      Policies:
+        PasswordPolicy:
+          MinimumLength: 8
+          RequireLowercase: true
+          RequireNumbers: true
+          RequireSymbols: false
+          RequireUppercase: true
+      Schema:
+        - Name: email
+          Required: true
+          Mutable: true
+        - Name: tenant_id
+          AttributeDataType: String
+          Mutable: true
+        - Name: plan
+          AttributeDataType: String
+          Mutable: true
+        - Name: role
+          AttributeDataType: String
+          Mutable: true
+
+  UserPoolClient:
+    Type: AWS::Cognito::UserPoolClient
+    Properties:
+      ClientName: !Sub huntington-crm-web-${Stage}
+      UserPoolId: !Ref UserPool
+      GenerateSecret: false
+      ExplicitAuthFlows:
+        - ALLOW_USER_SRP_AUTH
+        - ALLOW_REFRESH_TOKEN_AUTH
+      PreventUserExistenceErrors: ENABLED
+      TokenValidityUnits:
+        AccessToken: hours
+        IdToken: hours
+        RefreshToken: days
+      AccessTokenValidity: 1
+      IdTokenValidity: 1
+      RefreshTokenValidity: 30
+
+  # ── Lambda IAM Role ────────────────────────────────────────────
+  LambdaRole:
+    Type: AWS::IAM::Role
+    Properties:
+      RoleName: !Sub huntington-crm-lambda-${Stage}
+      AssumeRolePolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service: lambda.amazonaws.com
+            Action: sts:AssumeRole
+      ManagedPolicyArns:
+        - arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole
+      Policies:
+        - PolicyName: DynamoDBAccess
+          PolicyDocument:
+            Version: '2012-10-17'
+            Statement:
+              - Effect: Allow
+                Action:
+                  - dynamodb:GetItem
+                  - dynamodb:PutItem
+                  - dynamodb:UpdateItem
+                  - dynamodb:DeleteItem
+                  - dynamodb:Query
+                  - dynamodb:Scan
+                Resource:
+                  - !Sub arn:aws:dynamodb:us-east-1:${AWS::AccountId}:table/${TableName}
+                  - !Sub arn:aws:dynamodb:us-east-1:${AWS::AccountId}:table/${TableName}/index/*
+
+  # ── Lambda Function ────────────────────────────────────────────
+  CrmFunction:
+    Type: AWS::Lambda::Function
+    Properties:
+      FunctionName: !Sub huntington-crm-api-${Stage}
+      Runtime: python3.12
+      Handler: crm.handler.handler
+      Role: !GetAtt LambdaRole.Arn
+      Timeout: 30
+      MemorySize: 256
+      Environment:
+        Variables:
+          TABLE_NAME: !Ref TableName
+          STAGE: !Ref Stage
+      Code:
+        ZipFile: |
+          # Placeholder — deploy real code with scripts/deploy.sh
+          def handler(event, context):
+              return {"statusCode": 200, "body": "CRM API placeholder"}
+
+  # ── API Gateway HTTP API ───────────────────────────────────────
+  HttpApi:
+    Type: AWS::ApiGatewayV2::Api
+    Properties:
+      Name: !Sub huntington-crm-${Stage}
+      ProtocolType: HTTP
+      CorsConfiguration:
+        AllowHeaders: [content-type, authorization]
+        AllowMethods: [GET, POST, PUT, DELETE, OPTIONS]
+        AllowOrigins:
+          - !Sub https://${DashboardDomain}
+          - http://localhost:8888
+          - http://localhost:8080
+        MaxAge: 86400
+
+  JwtAuthorizer:
+    Type: AWS::ApiGatewayV2::Authorizer
+    Properties:
+      ApiId: !Ref HttpApi
+      AuthorizerType: JWT
+      IdentitySource:
+        - $request.header.Authorization
+      Name: CognitoJWT
+      JwtConfiguration:
+        Audience:
+          - !Ref UserPoolClient
+        Issuer: !Sub https://cognito-idp.us-east-1.amazonaws.com/${UserPool}
+
+  LambdaIntegration:
+    Type: AWS::ApiGatewayV2::Integration
+    Properties:
+      ApiId: !Ref HttpApi
+      IntegrationType: AWS_PROXY
+      IntegrationUri: !GetAtt CrmFunction.Arn
+      PayloadFormatVersion: '2.0'
+
+  # Catch-all route for /api/*
+  ApiRoute:
+    Type: AWS::ApiGatewayV2::Route
+    Properties:
+      ApiId: !Ref HttpApi
+      RouteKey: 'ANY /api/{proxy+}'
+      Target: !Sub integrations/${LambdaIntegration}
+      AuthorizationType: JWT
+      AuthorizerId: !Ref JwtAuthorizer
+
+  ApiStage:
+    Type: AWS::ApiGatewayV2::Stage
+    Properties:
+      ApiId: !Ref HttpApi
+      StageName: $default
+      AutoDeploy: true
+
+  # Allow API Gateway to invoke Lambda
+  LambdaPermission:
+    Type: AWS::Lambda::Permission
+    Properties:
+      FunctionName: !Ref CrmFunction
+      Action: lambda:InvokeFunction
+      Principal: apigateway.amazonaws.com
+      SourceArn: !Sub arn:aws:execute-api:us-east-1:${AWS::AccountId}:${HttpApi}/*/*
+
+Outputs:
+  ApiUrl:
+    Value: !Sub https://${HttpApi}.execute-api.us-east-1.amazonaws.com
+    Description: CRM API endpoint
+  UserPoolId:
+    Value: !Ref UserPool
+    Description: Cognito User Pool ID
+  UserPoolClientId:
+    Value: !Ref UserPoolClient
+    Description: Cognito App Client ID
